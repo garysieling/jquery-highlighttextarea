@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" dir="ltr">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>jQuery highlightTextarea demo page</title>
+  <link type="text/css" href="jquery/ui-lightness/jquery-ui-1.8.17.custom.css" rel="stylesheet" />	
+  <script type="text/javascript" src="jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="jquery.highlighttextarea.js"></script>
+  <script type="text/javascript">
+  $(document).ready(function() {
+      $("#demo1").highlightTextarea({
+          words: ["Lorem ipsum","vulputate"]
+      });
+      $("#demo2").highlightTextarea({
+          words: ["Lorem ipsum","Nam varius","Nullam"]
+      });
+      $("#demo3").highlightTextarea({
+          words: ["Lorem ipsum","vulputate"],
+          color: "#ADF0FF"
+      });
+      $("#demo4").highlightTextarea({
+          words: ["lOrEm IpSuM","VULPUTATE"],
+          caseSensitive: false
+      });
+      $("#demo5").highlightTextarea({
+          words: ["Lorem ipsum","vulputate"]
+      });
+      $("#demo6").highlightTextarea({
+          words: ["Lorem ipsum","Nam varius","Nullam"],
+          resizable: true
+      });
+  });
+  </script>  
+</head>
+
+<body>
+
+<table>
+<tr>
+<td>
+
+<h3>Default usage</h3>
+<textarea id="demo1" cols="30" rows="7">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+<pre>
+$("textarea").highlightTextarea({
+    words: ["Lorem ipsum","vulputate"]
+});
+</pre>
+
+</td>
+<td>
+
+<h3>With scrolling</h3>
+<textarea id="demo2" cols="30" rows="7">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat. Cras vel velit ac sem adipiscing iaculis dapibus mollis ligula. Donec accumsan ullamcorper leo, non faucibus est tempus eget. Nam varius ullamcorper viverra. Nullam iaculis tristique placerat. Nullam ante massa, consectetur nec aliquet nec, luctus et lorem. Donec semper odio lorem, sit amet tempor metus. Fusce et tortor tellus. Sed interdum nunc non ligula convallis fringilla in eget leo. Morbi sodales mollis ante dictum eleifend.</textarea>
+<pre>
+$("textarea").highlightTextarea({
+    words: ["Lorem ipsum","Nam varius","Nullam"]
+});
+</pre>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<h3>Change highlighting color</h3>
+<textarea id="demo3" cols="30" rows="7">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+<pre>
+$("textarea").highlightTextarea({
+    words: ["Lorem ipsum","vulputate"],
+    color: "#ADF0FF"
+});
+</pre>
+
+</td>
+<td>
+
+<h3>Case insensitive</h3>
+<textarea id="demo4" cols="30" rows="7">Lorem IPsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis VULPutate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+<pre>
+$("textarea").highlightTextarea({
+    words: ["lOrEm IpSuM","VULPUTATE"],
+    caseSensitive: false
+});
+</pre>
+
+</td>
+</tr>
+<tr>
+<td>
+
+<h3>With styles</h3>
+<textarea id="demo5" cols="30" rows="7" style="border:3px dotted #ccc;padding:10px;background-color:#fee;font-style:italic;font-family:Arial;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+<pre>
+$("textarea").highlightTextarea({
+    words: ["Lorem ipsum","vulputate"],
+});
+</pre>
+
+</td>
+<td>
+
+<h3>Resizing (with jQueryUI)</h3>
+<textarea id="demo6" cols="30" rows="7">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat. Cras vel velit ac sem adipiscing iaculis dapibus mollis ligula. Donec accumsan ullamcorper leo, non faucibus est tempus eget. Nam varius ullamcorper viverra. Nullam iaculis tristique placerat. Nullam ante massa, consectetur nec aliquet nec, luctus et lorem. Donec semper odio lorem, sit amet tempor metus. Fusce et tortor tellus. Sed interdum nunc non ligula convallis fringilla in eget leo. Morbi sodales mollis ante dictum eleifend.</textarea>
+<pre>
+$("textarea").highlightTextarea({
+    words: ["Lorem ipsum","Nam varius","Nullam"],
+    resizable: true
+});
+</pre>
+
+</td>
+</tr>
+</table>
+ 
+</body>
+</html>
