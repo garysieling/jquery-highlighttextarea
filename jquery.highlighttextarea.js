@@ -29,10 +29,8 @@
           color: '#ffff00',
           caseSensitive: true,
           resizable: false,
-          debug: false,
-          beforeParse: 0,
-          afterParse: 0,
-          onResize: 0
+          id: null,
+          debug: false
       };
       options = $.extend(defaults, options);
       
@@ -49,75 +47,62 @@
           var $highlighterContainer = $main.children('.highlighterContainer');
           var $highlighter = $highlighterContainer.children('.highlighter');
           
-          // real relative textarea position
-          var topMargin = eval(toPx($textarea.css('margin-top'))+toPx($textarea.css('border-top-width'))+toPx($textarea.css('padding-top'))),
-              leftMargin = eval(toPx($textarea.css('margin-left'))+toPx($textarea.css('border-left-width'))+toPx($textarea.css('padding-left')));
+          // optional id
+          if (options.id != null) {
+              $main.attr('id', options.id);
+          }
           
-          // apply css
+          // real relative textarea position
+          var topMargin = toPx($textarea.css('margin-top'))+toPx($textarea.css('border-top-width'))+toPx($textarea.css('padding-top')),
+              leftMargin = toPx($textarea.css('margin-left'))+toPx($textarea.css('border-left-width'))+toPx($textarea.css('padding-left'))+1;
+          
+          // the main container must have same sizes and position than the original textarea
           cloneCss($textarea, $main, [
             'float','vertical-align'
           ]);
-          
           $main.css({
-              'position':     'relative',
-              'overflow':     'hidden',
               'width':        $textarea.outerWidth(true), /* r */
               'height':       $textarea.outerHeight(true) /* r */
           });
           
+          // the highlighter container is positionned at "real" top-left corner of the textarea and takes its background
           cloneCss($textarea, $highlighterContainer, [
             'background','background-image','background-color','background-position','background-repeat','background-origin','background-clip','background-size'
           ]);
-          
           $highlighterContainer.css({
-              'position':     'absolute',
               'top':          topMargin+'px',
               'left':         leftMargin+'px',
               'width':        $textarea.width(), /* r */
               'height':       $textarea.height(), /* r */
-              'border':       'none',
-              'padding':      '0',
-              'margin':       '0',
-              'overflow':     'hidden'
           });
           
+          // the highlighter has the same sizes than the inner textarea and must have same font properties
           cloneCss($textarea, $highlighter, [
-            'font-size','font-family','font-style','font-weight'
+            'font-size','font-family','font-style','font-weight','line-height'
           ]);
-          
           $highlighter.css({
-              'position':     'absolute',
-              'top':          '0', /**/
-              'left':         '0',
               'width':        $textarea.width(), /**/
               'height':       $textarea.height(), /* r */
-              'border':       'none',
-              'padding':      '0', /**/
-              'margin':       '0',
-              'color':        'transparent',
-              'cursor':       'text',
-              'overflow':     'hidden'
           });
           
+          // now make the textarea transparent to see the highlighter throught
           $textarea.css({
-              'position':     'absolute',
-              'left':         '0',
-              'top':          '0',
               'background':   'none',
-              'resize':       'none'
           });
           
+          // display highlighter text for debuging
           if (options.debug) {
             $highlighter.css({
                 'color':      '#f00'
             });
           }
           
-          // apply the hooks
+          // prevend positionning errors by allways focusing the textarea
           $highlighter.bind('click', function() {
               $textarea.focus();
           });
           
+          // add triggers
           $textarea.bind({
               'keyup': function() {
                 applyText($textarea.val());
@@ -130,36 +115,36 @@
               }
           });
           
+          // resizable with jquery-ui
           if (options.resizable) {
-              $textarea.resizable({
-                handles: "se",
-                resize: function() { 
-                    updateSizePosition(); 
-                }
-              });
-              $(".ui-resizable-se").css({
-                  'bottom':  '13px',
-                  'right':   '1px'
-              });
+              if (jQuery.ui) { 
+                  $textarea.resizable({
+                    handles: "se",
+                    resize: function() { 
+                        updateSizePosition(true); 
+                    }
+                  });
+                  $(".highlightTextarea .ui-resizable-se").css({
+                      'bottom':  '13px',
+                      'right':   '1px'
+                  });
+              }
           }
           
+          // and finally make a first parse
           applyText($textarea.val());
           
           // applyText: replace $highlighter html with formated $textarea contents         
           function applyText(text) {
-              if (options.beforeParse != 0) {
-                  text = options.beforeParse(text, options, $textarea, $highlighter);
-              }
               text = replaceAll(text, '\n', '<br/>');
               text = replaceAll(text, '  ', '&nbsp;&nbsp;');
-
-              replace = options.words[0];
-              for (var i=1;i<options.words.length;i++) replace+= '|'+options.words[i];
-              text = replaceAll(text, replace, "<span style=\"background-color:"+options.color+";\">$1</span>");
-
-              if (options.afterParse != 0) {
-                  text = options.afterParse(text, options, $textarea, $highlighter);
+              
+              if (options.words[0] != "") {
+                replace = options.words[0];
+                for (var i=1;i<options.words.length;i++) replace+= '|'+options.words[i];
+                text = replaceAll(text, replace, "<span class=\"highlight\" style=\"background-color:"+options.color+";\">$1</span>");
               }
+              
               $highlighter.html(text);
               updateSizePosition();
           }
@@ -172,7 +157,7 @@
           // updateSizePosition: adapt $highlighter size and position according to $textarea size and scroll bar
           function updateSizePosition(forced) {              
               // resize containers
-              if (options.resizable || forced) {
+              if (forced) {
                   $main.css({
                       'width':         $textarea.outerWidth(true),
                       'height':        $textarea.outerHeight(true)
@@ -192,13 +177,13 @@
                 || $textarea.css('overflow') == 'scroll' || $textarea.css('overflow-y') == 'scroll'
               ) {
                   $highlighter.css({
-                      'width':         $textarea.width()-27,
-                      'padding-right': '27px'
+                      'width':         $textarea.width()-26,
+                      'padding-right': '26px'
                   });
               } else {
                   $highlighter.css({
-                      'width':         $textarea.width()-10,
-                      'padding-right': '10px'
+                      'width':         $textarea.width()-9,
+                      'padding-right': '9px'
                   });
               }
               
@@ -207,11 +192,6 @@
                   'top':     '-'+$textarea.scrollTop()+'px',
                   'height':  $highlighter.height()+$textarea.scrollTop()
               });
-              
-              // callback
-              if (options.onResize != 0) {
-                  options.onResize($highlighter, $textarea, options);
-              }
           }
 
           // cloneCss: set 'to' css attributes listed in 'what' as defined for 'from'
