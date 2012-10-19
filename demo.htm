@@ -3,14 +3,17 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <meta name="Description" content="highlightTextarea is a jQuery plugin which allows you to highlight words and sentences into textareas.">
+  
   <title>jQuery • highlightTextarea • Demos</title>
   
   <link type="text/css" href="src/style.css" rel="stylesheet" />	
   <link type="text/css" href="src/highlight.css" rel="stylesheet" />
+  
+  <link type="text/css" href="http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css" rel="stylesheet" />
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
+  <script type="text/javascript" src="http://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+  
   <link type="text/css" href="jquery.highlighttextarea.css" rel="stylesheet" />
-  <link type="text/css" href="jquery/ui-lightness/jquery-ui-1.8.17.custom.css" rel="stylesheet" />	
-  <script type="text/javascript" src="jquery/jquery.min.js"></script>
-  <script type="text/javascript" src="jquery/jquery-ui.min.js"></script>
   <script type="text/javascript" src="jquery.highlighttextarea.js"></script>
 
   <script type="text/javascript">
@@ -86,7 +89,7 @@
 
 <dt>Use regular expressions</dt>
 <dd>
-  <textarea id="demo4" cols="50" rows="1">My phone number is 0065487413 or 00.65.48.74.13</textarea>
+  <textarea id="demo4" cols="50" rows="2">My phone number is 0065487413 or 00.65.48.74.13</textarea>
 <pre>$<span class="opt">(</span><span class="str">&quot;textarea&quot;</span><span class="opt">).</span><span class="kwd">highlightTextarea</span><span class="opt">({</span>
     words<span class="opt">: [</span><span class="str">&quot;(([0-9]{2})([\.]?)){5}&quot;</span><span class="opt">]</span>
 <span class="opt">});</span></pre>

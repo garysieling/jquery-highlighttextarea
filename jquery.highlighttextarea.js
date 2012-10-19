@@ -53,8 +53,8 @@
           }
           
           // real relative textarea position
-          var topMargin = toPx($textarea.css('margin-top'))+toPx($textarea.css('border-top-width'))+toPx($textarea.css('padding-top')),
-              leftMargin = toPx($textarea.css('margin-left'))+toPx($textarea.css('border-left-width'))+toPx($textarea.css('padding-left'))+1;
+          var topMargin = toPx($textarea.css('margin-top'))+toPx($textarea.css('border-top-width')),
+              leftMargin = toPx($textarea.css('margin-left'))+toPx($textarea.css('border-left-width'));
           
           // the main container must have same sizes and position than the original textarea
           cloneCss($textarea, $main, [
@@ -67,7 +67,7 @@
           
           // the highlighter container is positionned at "real" top-left corner of the textarea and takes its background
           cloneCss($textarea, $highlighterContainer, [
-            'background','background-image','background-color','background-position','background-repeat','background-origin','background-clip','background-size'
+            'background','background-image','background-color','background-position','background-repeat','background-origin','background-clip','background-size','padding-top','padding-right','padding-bottom','padding-left'
           ]);
           $highlighterContainer.css({
               'top':          topMargin+'px',
@@ -136,12 +136,13 @@
           
           // applyText: replace $highlighter html with formated $textarea contents         
           function applyText(text) {
+              text = html_entities(text);
               text = replaceAll(text, '\n', '<br/>');
               text = replaceAll(text, '  ', '&nbsp;&nbsp;');
               
               if (options.words[0] != "") {
-                replace = options.words[0];
-                for (var i=1;i<options.words.length;i++) replace+= '|'+options.words[i];
+                replace = html_entities(options.words[0]);
+                for (var i=1;i<options.words.length;i++) replace+= '|'+html_entities(options.words[i]);
                 text = replaceAll(text, replace, "<span class=\"highlight\" style=\"background-color:"+options.color+";\">$1</span>");
               }
               
@@ -189,7 +190,7 @@
               
               // follow scroll
               $highlighter.css({
-                  'top':     '-'+$textarea.scrollTop()+'px',
+                  'top':     -$textarea.scrollTop()+'px',
                   'height':  $highlighter.height()+$textarea.scrollTop()
               });
           }
@@ -217,6 +218,18 @@
               } else {
                   return parseInt(value);
               }
+          }
+          
+          function html_entities(text) {
+              if (typeof(text) != "string") {
+                  text=text.toString();
+              }
+              text=text.replace(/&/g, "&amp;");
+              text=text.replace(/"/g, "&quot;");
+              text=text.replace(/</g, "&lt;");
+              text=text.replace(/>/g, "&gt;");
+              text=text.replace(/'/g, "&#146;");
+              return text;
           }
       });
       
