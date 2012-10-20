@@ -25,7 +25,7 @@
 (function($) {
   $.fn.highlightTextarea = function(options) {
       var defaults = {
-          words: ['a','e','i','o','u'],
+          words: [],
           color: '#ffff00',
           caseSensitive: true,
           resizable: false,
@@ -60,6 +60,12 @@
           cloneCss($textarea, $main, [
             'float','vertical-align'
           ]);
+          
+          $textarea.css({
+              'word-break': 'normal',
+              'word-wrap': 'normal',
+              });
+          
           $main.css({
               'width':        $textarea.outerWidth(true), /* r */
               'height':       $textarea.outerHeight(true) /* r */
@@ -67,7 +73,8 @@
           
           // the highlighter container is positionned at "real" top-left corner of the textarea and takes its background
           cloneCss($textarea, $highlighterContainer, [
-            'background','background-image','background-color','background-position','background-repeat','background-origin','background-clip','background-size','padding-top','padding-right','padding-bottom','padding-left'
+            'background','background-image','background-color','background-position','background-repeat','background-origin','background-clip','background-size',
+            'padding-top','padding-right','padding-bottom','padding-left'
           ]);
           $highlighterContainer.css({
               'top':          topMargin+'px',
@@ -78,10 +85,11 @@
           
           // the highlighter has the same sizes than the inner textarea and must have same font properties
           cloneCss($textarea, $highlighter, [
-            'font-size','font-family','font-style','font-weight','line-height'
+            'font-size','font-family','font-style','font-weight','line-height',
+            'vertical-align','word-spacing','text-align'
           ]);
           $highlighter.css({
-              'width':        $textarea.width(), /**/
+              'width':        $textarea.width(), /* r */
               'height':       $textarea.height(), /* r */
           });
           
@@ -105,7 +113,9 @@
           // add triggers
           $textarea.bind({
               'keyup': function() {
-                applyText($textarea.val());
+                condensator(function() {
+                  applyText($textarea.val());
+                }, 200, 500);
               },
               'scroll': function() {
                 updateSizePosition();
@@ -137,13 +147,14 @@
           // applyText: replace $highlighter html with formated $textarea contents         
           function applyText(text) {
               text = html_entities(text);
+              text = replaceAll(text, '\n ', '\n&nbsp;');
               text = replaceAll(text, '\n', '<br/>');
               text = replaceAll(text, '  ', '&nbsp;&nbsp;');
               
-              if (options.words[0] != "") {
-                replace = html_entities(options.words[0]);
-                for (var i=1;i<options.words.length;i++) replace+= '|'+html_entities(options.words[i]);
-                text = replaceAll(text, replace, "<span class=\"highlight\" style=\"background-color:"+options.color+";\">$1</span>");
+              if (options.words.length > 0) {
+                replace = new Array();
+                for (var i=0;i<options.words.length;i++) replace[i] = html_entities(options.words[i]);
+                text = replaceAll(text, replace.join('|'), "<span class=\"highlight\" style=\"background-color:"+options.color+";\">$1</span>");
               }
               
               $highlighter.html(text);
@@ -172,26 +183,25 @@
                   });
               }
               
+              
               // adapt width with textarea width and scroll bar
               if (
                 ($textarea[0].clientHeight < $textarea[0].scrollHeight && $textarea.css('overflow') != 'hidden' && $textarea.css('overflow-y') != 'hidden')
                 || $textarea.css('overflow') == 'scroll' || $textarea.css('overflow-y') == 'scroll'
               ) {
-                  $highlighter.css({
-                      'width':         $textarea.width()-26,
-                      'padding-right': '26px'
-                  });
+                  var padding = 25;
               } else {
-                  $highlighter.css({
-                      'width':         $textarea.width()-9,
-                      'padding-right': '9px'
-                  });
+                  var padding = 9;
               }
+              
+              
               
               // follow scroll
               $highlighter.css({
-                  'top':     -$textarea.scrollTop()+'px',
-                  'height':  $highlighter.height()+$textarea.scrollTop()
+                  'width':          ($textarea.width()-padding) +'px',
+                  'padding-right':  padding +'px',
+                  'top':            -$textarea.scrollTop()+'px',
+                  'height':         $textarea.height()+$textarea.scrollTop()
               });
           }
 
@@ -220,19 +230,41 @@
               }
           }
           
-          function html_entities(text) {
-              if (typeof(text) != "string") {
-                  text=text.toString();
+          function html_entities(value) {
+              if (value) {
+                  return jQuery('<div />').text(value).html();
+              } else {
+                  return '';
               }
-              text=text.replace(/&/g, "&amp;");
-              text=text.replace(/"/g, "&quot;");
-              text=text.replace(/</g, "&lt;");
-              text=text.replace(/>/g, "&gt;");
-              text=text.replace(/'/g, "&#146;");
-              return text;
           }
       });
       
       return this;
   };
 })(jQuery);
+
+var condensator = (function(){
+    var timer = null;
+    var startTime = null;
+    
+    return function(callback, ms, limit) {
+        if (limit==null) {
+          limit=ms;
+        }
+        
+        var date = new Date();
+        clearTimeout (timer);
+        
+        if (startTime==null) {
+            startTime = date.getTime();
+        }
+        
+        if (date.getTime() - startTime > limit) {
+            callback.call();
+            startTime = date.getTime();
+        }
+        else {
+            timer = setTimeout(callback, ms);
+        }
+    };
+})();
