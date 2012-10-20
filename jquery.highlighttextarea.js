@@ -52,57 +52,55 @@
               $main.attr('id', options.id);
           }
           
-          // real relative textarea position
-          var topMargin = toPx($textarea.css('margin-top'))+toPx($textarea.css('border-top-width')),
-              leftMargin = toPx($textarea.css('margin-left'))+toPx($textarea.css('border-left-width'));
-          
-          // the main container must have same sizes and position than the original textarea
-          cloneCss($textarea, $main, [
-            'float','vertical-align'
-          ]);
-          
+          // force some properties of the textarea
           $textarea.css({
-              'word-break': 'normal',
-              'word-wrap': 'normal',
-              });
+              'white-spaces': 'pre-wrap',
+              'word-wrap':    'break-word'
+          });
           
+          // the main container has the same size and position than the original textarea
+          cloneCss($textarea, $main, [
+              'float','vertical-align'
+          ]);
           $main.css({
-              'width':        $textarea.outerWidth(true), /* r */
-              'height':       $textarea.outerHeight(true) /* r */
+              'width':  $textarea.outerWidth(true),
+              'height': $textarea.outerHeight(true)
           });
           
           // the highlighter container is positionned at "real" top-left corner of the textarea and takes its background
           cloneCss($textarea, $highlighterContainer, [
-            'background','background-image','background-color','background-position','background-repeat','background-origin','background-clip','background-size',
-            'padding-top','padding-right','padding-bottom','padding-left'
+              'background','background-image','background-color','background-position','background-repeat','background-origin','background-clip','background-size',
+              'padding-top','padding-right','padding-bottom','padding-left'
           ]);
           $highlighterContainer.css({
-              'top':          topMargin+'px',
-              'left':         leftMargin+'px',
-              'width':        $textarea.width(), /* r */
-              'height':       $textarea.height(), /* r */
+              'top':    toPx($textarea.css('margin-top'))+toPx($textarea.css('border-top-width')),
+              'left':   toPx($textarea.css('margin-left'))+toPx($textarea.css('border-left-width')),
+              'width':  $textarea.width(),
+              'height': $textarea.height()
           });
           
-          // the highlighter has the same sizes than the inner textarea and must have same font properties
+          // the highlighter has the same size than the "inner" textarea and must have the same font properties
           cloneCss($textarea, $highlighter, [
-            'font-size','font-family','font-style','font-weight','line-height',
-            'vertical-align','word-spacing','text-align'
+              'font-size','font-family','font-style','font-weight','line-height',
+              'vertical-align','word-spacing','text-align'
           ]);
           $highlighter.css({
-              'width':        $textarea.width(), /* r */
-              'height':       $textarea.height(), /* r */
+              'width':  $textarea.width(),
+              'height': $textarea.height()
           });
           
           // now make the textarea transparent to see the highlighter throught
           $textarea.css({
-              'background':   'none',
+              'background': 'none',
           });
           
           // display highlighter text for debuging
           if (options.debug) {
-            $highlighter.css({
-                'color':      '#f00'
-            });
+              $highlighter.css({
+                  'color':  '#f00',
+                  'border': '1px solid #f00',
+                  'margin': '-1px'
+              });
           }
           
           // prevend positionning errors by allways focusing the textarea
@@ -113,15 +111,13 @@
           // add triggers
           $textarea.bind({
               'keyup': function() {
-                condensator(function() {
-                  applyText($textarea.val());
-                }, 200, 500);
+                  condensator(function(){ applyText($textarea.val()); }, 100, 300);
               },
               'scroll': function() {
-                updateSizePosition();
+                  updateSizePosition();
               },
               'resize': function() {
-                updateSizePosition(true);
+                  updateSizePosition(true);
               }
           });
           
@@ -129,14 +125,14 @@
           if (options.resizable) {
               if (jQuery.ui) { 
                   $textarea.resizable({
-                    handles: "se",
-                    resize: function() { 
-                        updateSizePosition(true); 
-                    }
+                      handles: "se",
+                      resize: function() { 
+                          updateSizePosition(true); 
+                      }
                   });
                   $(".highlightTextarea .ui-resizable-se").css({
-                      'bottom':  '13px',
-                      'right':   '1px'
+                      'bottom': '13px',
+                      'right':  '1px'
                   });
               }
           }
@@ -147,14 +143,14 @@
           // applyText: replace $highlighter html with formated $textarea contents         
           function applyText(text) {
               text = html_entities(text);
-              text = replaceAll(text, '\n ', '\n&nbsp;');
-              text = replaceAll(text, '\n', '<br/>');
-              text = replaceAll(text, '  ', '&nbsp;&nbsp;');
+              // text = replaceAll(text, '\n ', '\n&nbsp;');
+              // text = replaceAll(text, '\n', '<br/>');
+              // text = replaceAll(text, '  ', '&nbsp;&nbsp;');
               
               if (options.words.length > 0) {
-                replace = new Array();
-                for (var i=0;i<options.words.length;i++) replace[i] = html_entities(options.words[i]);
-                text = replaceAll(text, replace.join('|'), "<span class=\"highlight\" style=\"background-color:"+options.color+";\">$1</span>");
+                  replace = new Array();
+                  for (var i=0;i<options.words.length;i++) replace[i] = html_entities(options.words[i]);
+                  text = replaceAll(text, replace.join('|'), "<span class=\"highlight\" style=\"background-color:"+options.color+";\">$1</span>");
               }
               
               $highlighter.html(text);
@@ -171,37 +167,32 @@
               // resize containers
               if (forced) {
                   $main.css({
-                      'width':         $textarea.outerWidth(true),
-                      'height':        $textarea.outerHeight(true)
+                      'width':  $textarea.outerWidth(true),
+                      'height': $textarea.outerHeight(true)
                   });
                   $highlighterContainer.css({
-                      'width':         $textarea.width(),
-                      'height':        $textarea.height()
-                  });
-                  $highlighter.css({
-                      'height':        $textarea.height()
+                      'width':  $textarea.width(),
+                      'height': $textarea.height()
                   });
               }
-              
               
               // adapt width with textarea width and scroll bar
               if (
+                $textarea.css('overflow') == 'scroll' || $textarea.css('overflow-y') == 'scroll' ||
                 ($textarea[0].clientHeight < $textarea[0].scrollHeight && $textarea.css('overflow') != 'hidden' && $textarea.css('overflow-y') != 'hidden')
-                || $textarea.css('overflow') == 'scroll' || $textarea.css('overflow-y') == 'scroll'
               ) {
-                  var padding = 25;
-              } else {
-                  var padding = 9;
+                  var padding = 20;
               }
-              
-              
+              else {
+                  var padding = 5;
+              }
               
               // follow scroll
               $highlighter.css({
-                  'width':          ($textarea.width()-padding) +'px',
-                  'padding-right':  padding +'px',
-                  'top':            -$textarea.scrollTop()+'px',
-                  'height':         $textarea.height()+$textarea.scrollTop()
+                  'width':         $textarea.width()-padding,
+                  'height':        $textarea.height()+$textarea.scrollTop(),
+                  'padding-right': padding,
+                  'top':           -$textarea.scrollTop()
               });
           }
 
@@ -221,11 +212,11 @@
                       scopeVal = scopeTest.height();
                   scopeTest.remove();
                   return Math.round(that * scopeVal);
-                  
-              } else if (value != value.replace('px', '')) {
+              }
+              else if (value != value.replace('px', '')) {
                   return parseInt(value.replace('px', ''));
-                  
-              } else {
+              }
+              else {
                   return parseInt(value);
               }
           }
@@ -233,7 +224,8 @@
           function html_entities(value) {
               if (value) {
                   return jQuery('<div />').text(value).html();
-              } else {
+              }
+              else {
                   return '';
               }
           }

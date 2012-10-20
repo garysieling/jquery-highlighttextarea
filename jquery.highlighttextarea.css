@@ -23,6 +23,8 @@
   color: transparent;
   cursor: text;
   overflow: hidden;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 .highlightTextarea textarea {
   position: absolute;
