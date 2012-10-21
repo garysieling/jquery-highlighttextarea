@@ -51,7 +51,7 @@ html, body {
 /* BEGIN */
 body {
   font-size:14px;
-  font-family: Corbel,"Lucida Grande","Lucida Sans Unicode","Lucida Sans","DejaVu Sans","Bitstream Vera Sans","Liberation Sans",Verdana,sans-serif;
+  font-family: "Corbel","Lucida Grande","Lucida Sans Unicode","Lucida Sans","DejaVu Sans","Bitstream Vera Sans","Liberation Sans","Verdana",sans-serif;
   background-color:#eee;
 }
 textarea {
@@ -79,15 +79,34 @@ h2 {
 }
 
 pre {
+  position:relative;
   padding:10px;
   margin:4px 0;
   border:1px solid #222;
   box-shadow:inset 0 0 10px #000;
   color:#e1e0e5;
   background-color:#2a2b2f;
-  font-size:13px;
-  font-family:'MS Shell Dlg 2';
+  font-size:12px;
+  font-family:monospace;
   overflow:hidden;
+}
+pre.html:after {
+  content:"HTML";
+}
+pre.js:after {
+  content:"JS";
+}
+pre.css:after {
+  content:"CSS";
+}
+pre:after {
+  position:absolute;
+  top:2px;
+  right:2px;
+  font-family: "Corbel",sans-serif;
+  font-weight:bold;
+  color:#eee;
+  text-shadow:0 0 3px #eee;
 }
 
 dl {
@@ -95,6 +114,7 @@ dl {
 }
 dt {
   font-weight:bold;
+  text-shadow:1px 1px 1px #fff;
 }
 dd {
   margin:0 0 15px 30px;
@@ -162,7 +182,7 @@ ul.cb {
   top:10px;
   left:50%;
   width:120px;
-  margin-left:250px;
+  margin-left:300px;
   font-size:10px;
   text-align:left;
 }
@@ -172,7 +192,8 @@ ul.cb {
   
 #menu {
   margin-top:10px;
-  font-size:13px;
+  font-size:15px;
+  margin-left:-30px;
 }
 
 #downloadContainer {
@@ -218,5 +239,9 @@ ul.cb {
 
 .anchor {
   position:relative;
-  top:-80px;
+  top:-70px;
+}
+
+.changelog ul {
+  list-style: disc;
 }
