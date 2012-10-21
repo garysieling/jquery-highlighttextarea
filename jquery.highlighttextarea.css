@@ -1,5 +1,5 @@
 /**
- * jQuery highlightTextarea 1.0
+ * jQuery highlightTextarea 2.0
  *
  * Copyright 2012, Damien "Mistic" Sorel
  *    http://www.strangeplanet.fr
@@ -31,6 +31,8 @@
   left: 0;
   top: 0;
   resize: none;
+  white-spaces: pre-wrap;
+  word-wrap: break-word;
 }
 .highlightTextarea  .highlight {
   line-height:inherit;
