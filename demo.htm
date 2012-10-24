@@ -53,8 +53,12 @@
           $("#demo6").highlightTextarea("setWords", ["Quisque","auctor"]);
           return false;
       });
-      $(".setOptions").click(function() {
+      $(".color").click(function() {
           $("#demo6").highlightTextarea("setOptions", {color: "#ADF0FF"});
+          return false;
+      });
+      $(".debug").click(function() {
+          $("#demo6").highlightTextarea("setOptions", {debug: true});
           return false;
       });
   });
@@ -149,12 +153,13 @@
   <a href="#" class="disable">Disable</a> |
   <a href="#" class="enable">Enable</a> |
   <a href="#" class="setWords">Change words</a> |
-  <a href="#" class="setOptions">Change color</a>
+  <a href="#" class="color">Change color</a> |
+  <a href="#" class="debug">Debug</a>
   <br>
   <textarea id="demo6" cols="50" rows="5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
   
-  <pre class="html"><span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;disable&quot;</span><span class="kwd">&gt;</span>Disable<span class="kwd">&lt;/a&gt;</span> | <span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;enable&quot;</span><span class="kwd">&gt;</span>Enable<span class="kwd">&lt;/a&gt;</span> | 
-<span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;setWords&quot;</span><span class="kwd">&gt;</span>Change words<span class="kwd">&lt;/a&gt;</span> | <span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;setOptions&quot;</span><span class="kwd">&gt;</span>Change color<span class="kwd">&lt;/a&gt;</span></pre>
+  <pre class="html"><span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;disable&quot;</span><span class="kwd">&gt;</span>Disable<span class="kwd">&lt;/a&gt;</span> | <span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;enable&quot;</span><span class="kwd">&gt;</span>Enable<span class="kwd">&lt;/a&gt;</span> | <span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;setWords&quot;</span><span class="kwd">&gt;</span>Change 
+words<span class="kwd">&lt;/a&gt;</span> | <span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;color&quot;</span><span class="kwd">&gt;</span>Change color<span class="kwd">&lt;/a&gt;</span> | <span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;debug&quot;</span><span class="kwd">&gt;</span>Debug<span class="kwd">&lt;/a&gt;</span></pre>
 
   <pre class="js">$<span class="opt">(</span><span class="str">&quot;textarea&quot;</span><span class="opt">).</span><span class="kwd">highlightTextarea</span><span class="opt">({</span>
     words<span class="opt">: [</span><span class="str">&quot;Lorem ipsum&quot;</span><span class="opt">,</span><span class="str">&quot;vulputate&quot;</span><span class="opt">]</span>
@@ -168,8 +173,11 @@ $<span class="opt">(</span><span class="str">".enable"</span><span class="opt">)
 $<span class="opt">(</span><span class="str">".setWords"</span><span class="opt">).</span><span class="kwd">click</span><span class="opt">(</span>function<span class="opt">() {</span>
     $<span class="opt">(</span><span class="str">&quot;textarea&quot;</span><span class="opt">).</span><span class="kwd">highlightTextarea</span><span class="opt">(</span><span class="str">'setWords'</span>, <span class="opt">[</span> <span class="str">'Quisque'</span><span class="opt">,</span><span class="str">'auctor'</span> <span class="opt">]);</span>
 <span class="opt">});</span>
-$<span class="opt">(</span><span class="str">".setOptions"</span><span class="opt">).</span><span class="kwd">click</span><span class="opt">(</span>function<span class="opt">() {</span>
+$<span class="opt">(</span><span class="str">".color"</span><span class="opt">).</span><span class="kwd">click</span><span class="opt">(</span>function<span class="opt">() {</span>
     $<span class="opt">(</span><span class="str">&quot;textarea&quot;</span><span class="opt">).</span><span class="kwd">highlightTextarea</span><span class="opt">(</span><span class="str">'setOptions'</span>, <span class="opt">{</span> color<span class="opt">:</span> <span class="str">'#ADF0FF'</span> <span class="opt">});</span>
+<span class="opt">});</span>
+$<span class="opt">(</span><span class="str">".debug"</span><span class="opt">).</span><span class="kwd">click</span><span class="opt">(</span>function<span class="opt">() {</span>
+    $<span class="opt">(</span><span class="str">&quot;textarea&quot;</span><span class="opt">).</span><span class="kwd">highlightTextarea</span><span class="opt">(</span><span class="str">'setOptions'</span>, <span class="opt">{</span> debug<span class="opt">:</span> <span class="kwa">true</span> <span class="opt">});</span>
 <span class="opt">});</span></pre>
 </dd>
 

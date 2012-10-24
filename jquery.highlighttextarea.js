@@ -32,34 +32,32 @@
         
         // already instantiated and trying to execute a method
         if (plugin && typeof options === 'string') {
-            if (plugin[options]!=='undefined' && $.inArray(options,callable)!==false) {
+            if ($.inArray(options,callable)!==false) {
                 return plugin[options].apply(plugin, Array.prototype.slice.call(arguments, 1));
             }
             else {
                 throw 'Method "' + options + '" does not exist on jQuery.highlightTextarea';
             }
         }
-        // not instantiated and trying to pass init object (or nothing)
+        // not instantiated and trying to pass options object (or nothing)
         else if (!plugin && (typeof options === 'object' || !options)) {
             if (!options) {
                 options = {};
             }
+            
+            // extend defaults
+            options = $.extend({}, $.fn.highlightTextarea.defaults, options);
+            options.regParam = options.caseSensitive ? 'g' : 'gi';
 
             // for each element instantiate the plugin
             return this.each(function() {
-                var $this = $(this);
-
-                // extend defaults
-                options = $.extend({}, $.fn.highlightTextarea.defaults, options);
-                options.regParam = options.caseSensitive ? 'g' : 'gi';
-                
-                var plugin = $this.data('highlightTextarea');
+                var plugin = $(this).data('highlightTextarea');
 
                 // create new instance of the plugin if the plugin isn't initialised
                 if (!plugin) {
-                    plugin = new $.highlightTextarea($this, options);
+                    plugin = new $.highlightTextarea($(this), options);
                     plugin.init();
-                    $this.data('highlightTextarea', plugin);
+                    $(this).data('highlightTextarea', plugin);
                 }
             });
         }
@@ -136,10 +134,11 @@
 
         /*
          * compute highlight
+         * @param delay: boolean - use a delayed update
          * scope: public
          */
-        this.highlight = function(tempo) {
-            if (tempo==null) {
+        this.highlight = function(delay) {
+            if (delay==null || delay==false) {
                 this.applyText(this.$textarea.val());
             }
             else {
@@ -162,6 +161,13 @@
             
             this.options = $.extend({}, this.options, options);
             this.options.regParam = this.options.caseSensitive ? 'g' : 'gi';
+            
+            if (this.options.debug) {
+                this.$highlighter.addClass('debug');
+            }
+            else {
+                this.$highlighter.removeClass('debug');
+            }
             
             if (this.$textarea.data('highlightTextareaEvents')===true) {
                 this.highlight();
@@ -204,14 +210,14 @@
             if (typeof events != 'boolean' || events !== true) {
                 // prevend positionning errors by allways focusing the textarea
                 this.$highlighter.on({
-                  'click' : $.proxy(function(){ this.$textarea.focus(); }, this)
+                  'click.highlightTextarea' : $.proxy(function(){ this.$textarea.focus(); }, this)
                 });
                 
-                // add triggers
+                // add triggers to textarea
                 this.$textarea.on({
-                    'input' :  $.proxy(function(){ this.highlight(true); }, this),
-                    // 'resize' : $.proxy(function(){ this.updateSizePosition(true); }, this), // not used because browser native resize is not captured by jQuery
-                    'scroll' : $.proxy(function(){ this.updateSizePosition(); }, this)
+                    'input.highlightTextarea' :  $.proxy(function(){ this.highlight(true); }, this),
+                    'resize.highlightTextarea' : $.proxy(function(){ this.updateSizePosition(true); }, this),
+                    'scroll.highlightTextarea' : $.proxy(function(){ this.updateSizePosition(); }, this)
                 });
 
                 this.$textarea.data('highlightTextareaEvents', true);
@@ -223,8 +229,8 @@
          * scope: private
          */
         this.unbindEvents = function() {
-            this.$highlighter.off('click');
-            this.$textarea.off('input scroll resize');
+            this.$highlighter.off('click.highlightTextarea');
+            this.$textarea.off('input.highlightTextarea scroll.highlightTextarea resize.highlightTextarea');
             this.$textarea.data('highlightTextareaEvents', false);
         }
         
@@ -289,11 +295,7 @@
             
             // display highlighter text for debuging
             if (this.options.debug) {
-                this.$highlighter.css({
-                    'color':  '#f00',
-                    'border': '1px solid #f00',
-                    'margin': '-1px'
-                });
+                this.$highlighter.addClass('debug');
             }
         }
         
@@ -306,10 +308,6 @@
                 this.$textarea.resizable({
                     'handles': 'se',
                     'resize':  $.proxy(function() { this.updateSizePosition(true); }, this)
-                });
-                $(".highlightTextarea .ui-resizable-se").css({
-                    'bottom': '13px',
-                    'right':  '1px'
                 });
             }
         }
@@ -347,12 +345,12 @@
             // resize containers
             if (forced) {
                 this.$main.css({
-                    'width':         this.$textarea.outerWidth(true),
-                    'height':        this.$textarea.outerHeight(true)
+                    'width':  this.$textarea.outerWidth(true),
+                    'height': this.$textarea.outerHeight(true)
                 });
                 this.$highlighterContainer.css({
-                    'width':         this.$textarea.width(),
-                    'height':        this.$textarea.height()
+                    'width':  this.$textarea.width(),
+                    'height': this.$textarea.height()
                 });
             }
             

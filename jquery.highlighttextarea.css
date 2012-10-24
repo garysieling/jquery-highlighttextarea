@@ -26,6 +26,11 @@
   white-space: pre-wrap;
   word-wrap: break-word;
 }
+.highlightTextarea  .highlighter.debug {
+  color: #f00;
+  border: 1px solid #f00;
+  margin: -1px;
+}
 .highlightTextarea textarea {
   position: absolute;
   left: 0;
@@ -35,5 +40,9 @@
   word-wrap: break-word;
 }
 .highlightTextarea  .highlight {
-  line-height:inherit;
+  line-height: inherit;
+}
+.highlightTextarea .ui-resizable-se {
+  bottom: 13px;
+  right: 1px;
 }
