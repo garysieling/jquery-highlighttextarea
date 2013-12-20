@@ -31,7 +31,8 @@
   border: 1px solid #f00;
   margin: -1px;
 }
-.highlightTextarea textarea {
+.highlightTextarea textarea,
+.highlightTextarea input {
   position: absolute;
   left: 0;
   top: 0;
