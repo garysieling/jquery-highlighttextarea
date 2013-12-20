@@ -362,14 +362,16 @@
                 });
             }
             
+						//If there is a vertical scrollbar, account for its width
             if (
               (this.$textarea[0].clientHeight < this.$textarea[0].scrollHeight && this.$textarea.css('overflow') != 'hidden' && this.$textarea.css('overflow-y') != 'hidden')
               || this.$textarea.css('overflow') == 'scroll' || this.$textarea.css('overflow-y') == 'scroll'
             ) {
-                var padding = 18;
+                var padding = this.getScrollbarWidth();
             }
+						//No vertical scrollbar detected
             else {
-                var padding = 5;
+                var padding = 0;
             }
             
 						var width = this.$textarea[0].tagName.toLowerCase()=='input' ? 99999 : this.$textarea.width()-padding; //TODO: There's got to be a better way of going about this than just using 99999px...
@@ -381,6 +383,26 @@
                 'left':          -this.$textarea.scrollLeft()
             });
         }
+				
+				//Adapted from http://javascript.jstruebig.de/javascript/70/
+				this.getScrollbarWidth = function() {
+					// Scrollbalken im Body ausschalten ("Off scrollbars in the Body")
+					document.body.style.overflow = 'hidden';
+					var width = document.body.clientWidth;
+ 
+					// Scrollbalken ("Scrollbars")
+					document.body.style.overflow = 'scroll';
+ 
+					width -= document.body.clientWidth;
+ 
+					// Der IE im Standardmode ("IE in Standard Mode")
+					if(!width) width = document.body.offsetWidth-document.body.clientWidth;
+ 
+					// ursprüngliche Einstellungen wiederherstellen ("Restore original settings")
+					document.body.style.overflow = '';
+ 
+					return width;
+				}
 
         /*
          * set 'to' css attributes listed in 'what' as defined for 'from'
