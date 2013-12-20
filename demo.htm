@@ -39,26 +39,29 @@
           id: "demo5-wrap"
       });
       $("#demo6").highlightTextarea({
+          words: ["Lorem ipsum","vulputate"]
+      });
+      $("#demo7").highlightTextarea({
           words: ["Lorem ipsum","vulputate"],
       });
       $(".disable").click(function() {
-          $("#demo6").highlightTextarea("disable");
+          $("#demo7").highlightTextarea("disable");
           return false;
       });
       $(".enable").click(function() {
-          $("#demo6").highlightTextarea("enable");
+          $("#demo7").highlightTextarea("enable");
           return false;
       });
       $(".setWords").click(function() {
-          $("#demo6").highlightTextarea("setWords", ["Quisque","auctor"]);
+          $("#demo7").highlightTextarea("setWords", ["Quisque","auctor"]);
           return false;
       });
       $(".color").click(function() {
-          $("#demo6").highlightTextarea("setOptions", {color: "#ADF0FF"});
+          $("#demo7").highlightTextarea("setOptions", {color: "#ADF0FF"});
           return false;
       });
       $(".debug").click(function() {
-          $("#demo6").highlightTextarea("setOptions", {debug: true});
+          $("#demo7").highlightTextarea("setOptions", {debug: true});
           return false;
       });
   });
@@ -148,6 +151,16 @@
 </dd>
 
 
+<dt>Use &lt;input&gt; elements</dt>
+<dd>
+  <input id="demo6" value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat."/>
+  
+  <pre>$<span class="opt">(</span><span class="str">&quot;textarea&quot;</span><span class="opt">).</span><span class="kwd">highlightTextarea</span><span class="opt">({</span>
+    words<span class="opt">: [</span><span class="str">&quot;Lorem ipsum&quot;</span><span class="opt">,</span><span class="str">&quot;vulputate&quot;</span><span class="opt">]</span>
+<span class="opt">});</span></pre>
+</dd>
+
+
 <dt>Use API</dt>
 <dd>
   <a href="#" class="disable">Disable</a> |
@@ -156,7 +169,7 @@
   <a href="#" class="color">Change color</a> |
   <a href="#" class="debug">Debug</a>
   <br>
-  <textarea id="demo6" cols="50" rows="5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  <textarea id="demo7" cols="50" rows="5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
   
   <pre class="html"><span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;disable&quot;</span><span class="kwd">&gt;</span>Disable<span class="kwd">&lt;/a&gt;</span> | <span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;enable&quot;</span><span class="kwd">&gt;</span>Enable<span class="kwd">&lt;/a&gt;</span> | <span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;setWords&quot;</span><span class="kwd">&gt;</span>Change 
 words<span class="kwd">&lt;/a&gt;</span> | <span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;color&quot;</span><span class="kwd">&gt;</span>Change color<span class="kwd">&lt;/a&gt;</span> | <span class="kwd">&lt;a</span> <span class="kwa">class</span><span class="opt">=</span><span class="str">&quot;debug&quot;</span><span class="kwd">&gt;</span>Debug<span class="kwd">&lt;/a&gt;</span></pre>
