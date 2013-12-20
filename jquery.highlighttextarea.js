@@ -399,7 +399,6 @@
 			      parent.remove();
 			    }
     
-					console.log(width);
 			    return width;
 				}
 
