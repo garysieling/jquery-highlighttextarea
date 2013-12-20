@@ -220,6 +220,14 @@
                     'scroll.highlightTextarea' : $.proxy(function(){ this.updateSizePosition(); }, this)
                 });
 
+								//For <input> elements, also call updateSizePosition() on a more comprehensive set of events.  (<input> elements don't seem to trigger the scroll event, so we have to detect changes through more creative means...)
+								if(this.$textarea[0].tagName.toLowerCase()=='input') {
+	                this.$textarea.on({
+										//The slight delay below helps prevent Cmd-Left Arrow and Cmd-Right Arrow on Mac from behaving strangely.  (With this delay removed, the highlight is only updated after Cmd is released)
+                    'keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea input.highlightTextarea2' : $.proxy(function(){ setTimeout($.proxy(function() { this.updateSizePosition(); }, this), 1); }, this)
+	                });
+								}
+
                 this.$textarea.data('highlightTextareaEvents', true);
             }
         }
@@ -230,7 +238,7 @@
          */
         this.unbindEvents = function() {
             this.$highlighter.off('click.highlightTextarea');
-            this.$textarea.off('input.highlightTextarea scroll.highlightTextarea resize.highlightTextarea');
+            this.$textarea.off('input.highlightTextarea scroll.highlightTextarea resize.highlightTextarea keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea input.highlightTextarea2');
             this.$textarea.data('highlightTextareaEvents', false);
         }
         
@@ -364,11 +372,13 @@
                 var padding = 5;
             }
             
+						var width = this.$textarea[0].tagName.toLowerCase()=='input' ? 99999 : this.$textarea.width()-padding; //TODO: There's got to be a better way of going about this than just using 99999px...
             this.$highlighter.css({
-                'width':         this.$textarea.width()-padding,
+                'width':         width,
                 'height':        this.$textarea.height()+this.$textarea.scrollTop(),
                 'padding-right': padding,
-                'top':           -this.$textarea.scrollTop()
+                'top':           -this.$textarea.scrollTop(),
+                'left':          -this.$textarea.scrollLeft()
             });
         }
 
