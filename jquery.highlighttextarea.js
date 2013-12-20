@@ -98,6 +98,9 @@
          * scope: private
          */
         this.init = function() {
+						//Determine scrollbar width
+						this.scrollbarWidth = this.getScrollbarWidth();
+						
             // build the HTML wrapper
             if (this.$textarea.closest('.highlightTextarea').length <= 0) {
                 this.$textarea.wrap('<div class="highlightTextarea" />');
@@ -367,7 +370,7 @@
               (this.$textarea[0].clientHeight < this.$textarea[0].scrollHeight && this.$textarea.css('overflow') != 'hidden' && this.$textarea.css('overflow-y') != 'hidden')
               || this.$textarea.css('overflow') == 'scroll' || this.$textarea.css('overflow-y') == 'scroll'
             ) {
-                var padding = this.getScrollbarWidth();
+                var padding = this.scrollbarWidth;
             }
 						//No vertical scrollbar detected
             else {
@@ -384,24 +387,20 @@
             });
         }
 				
-				//Adapted from http://javascript.jstruebig.de/javascript/70/
+				//Adapted from http://benalman.com/projects/jquery-misc-plugins/#scrollbarwidth
 				this.getScrollbarWidth = function() {
-					// Scrollbalken im Body ausschalten ("Off scrollbars in the Body")
-					document.body.style.overflow = 'hidden';
-					var width = document.body.clientWidth;
- 
-					// Scrollbalken ("Scrollbars")
-					document.body.style.overflow = 'scroll';
- 
-					width -= document.body.clientWidth;
- 
-					// Der IE im Standardmode ("IE in Standard Mode")
-					if(!width) width = document.body.offsetWidth-document.body.clientWidth;
- 
-					// ursprüngliche Einstellungen wiederherstellen ("Restore original settings")
-					document.body.style.overflow = '';
- 
-					return width;
+			    var parent,
+			      child;
+    
+			    if ( typeof width === 'undefined' ) {
+			      parent = $('<div style="width:50px;height:50px;overflow:auto"><div/></div>').appendTo('body');
+			      child = parent.children();
+			      width = child.innerWidth() - child.height( 99 ).innerWidth();
+			      parent.remove();
+			    }
+    
+					console.log(width);
+			    return width;
 				}
 
         /*
