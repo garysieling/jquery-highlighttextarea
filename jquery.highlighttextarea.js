@@ -227,7 +227,9 @@
 								if(this.$textarea[0].tagName.toLowerCase()=='input') {
 	                this.$textarea.on({
 										//The slight delay below helps prevent Cmd-Left Arrow and Cmd-Right Arrow on Mac from behaving strangely.  (With this delay removed, the highlight is only updated after Cmd is released)
-                    'keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea input.highlightTextarea2 select.highlightTextarea' : $.proxy(function(){ setTimeout($.proxy(function() { this.updateSizePosition(); }, this), 1); }, this)
+                    'keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea input.highlightTextarea2 select.highlightTextarea' : $.proxy(function(){ setTimeout($.proxy(function() { this.updateSizePosition(); }, this), 1); }, this),
+                    'mouseover.highlightTextarea' : $.proxy(function(){ this.inputRefreshInterval = setInterval($.proxy(function() { this.updateSizePosition(); }, this), 100); }, this), //Respond to horizontal mouse scrolling (again, we can't use the scroll event, so this is the second best option.  Feel free to comment out the mouseover and mouseout handlers if you can't spare the extra CPU required for polling)
+                    'mouseout.highlightTextarea' : $.proxy(function(){ clearInterval(this.inputRefreshInterval); this.updateSizePosition(); }, this)
 	                });
 								}
 
@@ -241,7 +243,7 @@
          */
         this.unbindEvents = function() {
             this.$highlighter.off('click.highlightTextarea');
-            this.$textarea.off('input.highlightTextarea scroll.highlightTextarea resize.highlightTextarea keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea input.highlightTextarea2 select.highlightTextarea');
+            this.$textarea.off('input.highlightTextarea scroll.highlightTextarea resize.highlightTextarea keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea input.highlightTextarea2 select.highlightTextarea mouseover.highlightTextarea mouseout.highlightTextarea');
             this.$textarea.data('highlightTextareaEvents', false);
         }
         
