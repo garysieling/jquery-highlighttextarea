@@ -47,7 +47,7 @@
             
             // extend defaults
             options = $.extend({}, $.fn.highlightTextarea.defaults, options);
-            options.regParam = options.caseSensitive ? 'g' : 'gi';
+            options.regParam = options.caseSensitive ? 'gm' : 'gim';
 
             // for each element instantiate the plugin
             return this.each(function() {
