@@ -1,0 +1,14 @@
+{
+    "name": "adaptv-jQuery-highlightTextarea",
+    "version": "0.0.1",
+    "main": ["jquery.highlighttextarea.css", "jquery.highlighttextarea.js"],
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "components"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/Adaptv/jQuery-highlightTextarea.git"
+    }
+}
