@@ -37,7 +37,7 @@
   left: 0;
   top: 0;
   resize: none;
-  white-spaces: pre-wrap;
+  white-space: pre-wrap;
   word-wrap: break-word;
 }
 .highlightTextarea  .highlight {
