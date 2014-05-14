@@ -1,0 +1,161 @@
+---
+layout: default
+title: Home
+description: jQuery to highlight words and sentences into<br> &lt;textarea&gt; and &lt;input&gt;
+isHome: true
+---
+
+<!-- intro -->
+<section class="bs-docs-section">
+	<h1 id="overview" class="page-header">Overview</h1>
+  <blockquote>
+    highlightTextarea aim is to highlight portions of text into a <code>textarea</code> or a <code>input</code>. It can highlight a set of words or a specific range.
+  </blockquote>
+
+  <h3 id="example">Example</h3>
+  <p>In this example, the words <b>Lorem ipsum</b> and <b>vulputate</b> are highlighted in yellow. The content is still editable and the highlighting will update automatically.</p>
+
+  <div class="bs-example">
+    <textarea id="demo" cols="50" rows="3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </div>
+{% highlight html %}
+<textarea cols="50" rows="5">...</textarea>
+
+<script>
+  $('textarea').highlightTextarea({
+    words: ['Lorem ipsum', 'vulputate']
+  });
+</script>
+{% endhighlight %}
+</section>
+
+
+<section class="bs-docs-section">
+  <h1 id="installation" class="page-header">Installation</h1>
+
+  <h3 id="dependencies">Dependencies</h3>
+  <ul>
+    <li>jQuery >= 1.9</li>
+    <li>jQueryUI Resizable >= 1.9 (only if you want to use resizable textareas)</li>
+  </ul>
+
+  <h3 id="includes">Includes</h3>
+  <p>The module is available on Bower. Add <code>jquery-highlighttextarea</code> to your <code>bower.json</code> file install or install it manually with <code>bower install jquery-highlighttextarea</code>.
+
+  <p>Include the Javascript files...</p>
+{% highlight html %}
+<script src="dist/jquery/jquery.min.js"></script>
+<script src="dist/jquery/jquery-ui.min.js"></script>
+<script src="dist/jquery-highlighttextarea/jquery.highlighttextarea.js"></script>
+{% endhighlight %}
+
+  <p>...and include the stylesheet as well as jQueryUI one.</p>
+{% highlight html %}
+<link rel="stylesheet" href="dist/jquery-ui/theme/jquery-ui.min.css">
+<link rel="stylesheet" href="dist/jquery-highlighttextarea/jquery.highlighttextarea.css">
+{% endhighlight %}
+</section>
+
+<section class="bs-docs-section">
+  <h1 id="usage" class="page-header">Usage</h1>
+
+  <p>Simply call <code>highlightTextarea</code> plugin on a jQuery object.</p>
+{% highlight javascript %}
+$(/* selector */).highlightTextarea({
+  /* options */
+});
+{% endhighlight %}
+  
+  <div class="bs-callout bs-callout-warning">
+    <h4>Element size</h4>
+    <p>highlightTextarea won't work on dynamic textareas. You must use a fixed size, either with <code>cols</code> and <code>rows</code> attributes (<code>size</code> fir inputs) or in CSS by defining <code>height</code> and <code>width</code> in px or em (no percentage).</p>
+  </div>
+
+  <h3 id="options">Options</h3>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th style="width: 120px;">Name</th>
+          <th style="width: 100px;">type</th>
+          <th style="width: 100px;">default</th>
+          <th>description</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>words</td>
+          <td>array</td>
+          <td>[]</td>
+          <td>Either an array of words to highlight (<i>can be regular expressions</i>) or an array of objects containing:
+            <ul>
+              <li><b>color:</b> color of this subset of words</li>
+              <li><b>words:</b> array of words to highlight (<i>can be regexes too</i>)</li>
+            </ul>
+          </td>
+        </tr>
+        <tr>
+          <td>ranges</td>
+          <td>array</td>
+          <td>[]</td>
+          <td>Either an array of indexes pairs (start, end) or an array of objects containing:
+            <ul>
+              <li><b>color:</b> color of this subset of ranges</li>
+              <li><b>ranges:</b> array of indexes pairs</li>
+              <li><b>start</b></li>
+              <li><b>end</b> or <b>length</b></li>
+            </ul>
+            <i class="glyphicon glyphicon-warning-sign"></i> Provide <code>ranges</code> or <code>start/end/length</code>, but not both.
+          </td>
+        </tr>
+        <tr>
+          <td>color</td>
+          <td>string</td>
+          <td>'#FFFF00'</td>
+          <td>Color used if <code>words</code> is an array of words or if <code>ranges</code> is an array of pairs.</td>
+        </tr>
+        <tr>
+          <td>caseSensitive</td>
+          <td>boolean</td>
+          <td>true</td>
+          <td>Set to <code>false</code> to make case insensitive words match</td>
+        </tr>
+        <tr>
+          <td>resizable</td>
+          <td>boolean</td>
+          <td>false</td>
+          <td>Should the textarea be resizable (requires jQueryUI Resizable)</td>
+        </tr>
+        <tr>
+          <td>id</td>
+          <td>string</td>
+          <td>''</td>
+          <td>Identifier to add to the textarea container, don't use this parameter when initializing multiple textareas at once</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bs-callout bs-callout-warning">
+    <p>Only provide <code>words</code> or <code>ranges</code> but not both (if so, <code>ranges</code> will be ignored).</p>
+  </div>
+</section>
+
+
+<link rel="stylesheet" href="{{site.basedir}}/dist/jquery.highlighttextarea.css">
+<script src="{{site.basedir}}/dist/jquery.highlighttextarea.js"></script>
+
+<script>
+  $('#demo').highlightTextarea({
+    words: ['Lorem ipsum', 'vulputate']
+  });
+</script>
+
+<style>
+.highlightTextarea .highlight {
+  padding:0;
+  margin:0;
+  border:0;
+  border-radius:0;
+}
+</style>

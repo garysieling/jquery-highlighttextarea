@@ -1,0 +1,8 @@
+{
+  "name": "jQuery-highlightTextarea-doc",
+  "version": "0.0.0",
+
+  "dependencies": {
+    "jquery-ui": "latest"
+  }
+}

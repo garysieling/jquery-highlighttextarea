@@ -1,0 +1,14 @@
+/_site
+Gemfile.lock
+
+# commit minimum dependencies
+/dist/jquery
+/dist/jquery-ui/*
+!/dist/jquery-ui/ui
+/dist/jquery-ui/ui/*
+!/dist/jquery-ui/ui/minified
+/dist/jquery-ui/ui/minified/*
+!/dist/jquery-ui/ui/minified/jquery-ui.min.js
+!/dist/jquery-ui/themes
+/dist/jquery-ui/themes/*
+!/dist/jquery-ui/themes/smoothness
