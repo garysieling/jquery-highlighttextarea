@@ -1,0 +1,164 @@
+---
+layout: default
+title: Examples
+---
+
+<!-- intro -->
+<section class="bs-docs-section">
+	<h1 id="examples" class="page-header">Examples</h1>
+
+  <h3 id="case">Case insensitive</h3>
+  <div class="bs-example">
+    <textarea id="demo-case" cols="50" rows="3">LoRem IPSUm dolOR sIt aMEt, cONseCTETUR AdIpiSCiNG eLiT. QuISqUE aT mAssA nOn ERaT cONVaLLIs VulpUTatE mOlestiE neC dui. DONEC aUCtOR BlaNDIt niBH QUIS LucTUs. DONEc tInciduNT auctOr coNsEquaT.</textarea>
+  </div>
+{% highlight javascript %}
+$('textarea').highlightTextarea({
+  words: ['lorem ipsum', 'VULPUTATE'],
+  caseSensitive: false
+});
+{% endhighlight %}
+
+  <h3 id="resize">Resizable</h3>
+  <div class="bs-example">
+    <textarea id="demo-resize" cols="50" rows="3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </div>
+{% highlight javascript %}
+$('textarea').highlightTextarea({
+  words: ['Lorem ipsum', 'vulputate'],
+  resizable: true
+});
+{% endhighlight %}
+
+  <h3 id="regex">Regular Expression</h3>
+  <div class="bs-example">
+    <textarea id="demo-regex" cols="50" rows="3"><ul>
+{foreach from=$list item=row}
+  <li>{$row.name}</li>
+{/foreach}
+</ul></textarea>
+  </div>
+{% highlight javascript %}
+$('textarea').highlightTextarea({
+  words: ['{(.+?)}']
+});
+{% endhighlight %}
+
+  <h3 id="multiple">Multiple colors</h3>
+  <div class="bs-example">
+    <textarea id="demo-multiple" cols="50" rows="3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </div>
+{% highlight javascript %}
+$('textarea').highlightTextarea({
+  words: [{
+    color: '#ADF0FF',
+    words: ['Lorem ipsum', 'vulputate']
+  }, {
+    color: '#FFFF00',
+    words: ['Donec']
+  }]
+});
+{% endhighlight %}
+
+  <h3 id="range">Indexes ranges</h3>
+  <div class="bs-example">
+    <textarea id="demo-range" cols="50" rows="3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </div>
+{% highlight javascript %}
+$('textarea').highlightTextarea({
+  ranges: [{
+    color: '#ADF0FF',
+    start: 0,
+    length: 10
+  }, {
+    color: '#FFFF00',
+    ranges: [[40,45], [50,55]]
+  }]
+});
+{% endhighlight %}
+
+  <h3 id="custom">Customize highlight</h3>
+  <div class="bs-example">
+    <textarea id="demo-custom" cols="50" rows="3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </div>
+{% highlight html %}
+<script>
+  $('textarea').highlightTextarea({
+    words: ['Lorem ipsum', 'vulputate'],
+    id: 'demoCustom'
+  });
+</script>
+
+<style>
+  #demoCustom .highlight {
+    padding:0 3px;
+    margin:-1px -4px;
+    border-radius:0.5em;
+    border:1px solid pink;
+  }
+</style>
+{% endhighlight %}
+</section>
+
+
+<link rel="stylesheet" href="{{site.basedir}}/dist/jquery-ui/themes/smoothness/jquery-ui.min.css">
+<link rel="stylesheet" href="{{site.basedir}}/dist/jquery.highlighttextarea.css">
+<script src="{{site.basedir}}/dist/jquery-ui/ui/minified/jquery-ui.min.js"></script>
+<script src="{{site.basedir}}/dist/jquery.highlighttextarea.js"></script>
+
+<script>
+$('#demo-case').highlightTextarea({
+  words: ['lorem ipsum', 'VULPUTATE'],
+  caseSensitive: false
+});
+
+$('#demo-resize').highlightTextarea({
+  words: ['Lorem ipsum', 'vulputate'],
+  resizable: true
+});
+
+$('#demo-regex').highlightTextarea({
+  words: ['{(.+?)}']
+});
+
+$('#demo-multiple').highlightTextarea({
+  words: [{
+    color: '#ADF0FF',
+    words: ['Lorem ipsum', 'vulputate']
+  }, {
+    color: '#FFFF00',
+    words: ['Donec']
+  }]
+});
+
+$('#demo-range').highlightTextarea({
+  ranges: [{
+    color: '#ADF0FF',
+    start: 0,
+    length: 10
+  }, {
+    color: '#FFFF00',
+    ranges: [[40,45], [50,55]]
+  }]
+});
+
+$('#demo-custom').highlightTextarea({
+  words: ['Lorem ipsum', 'vulputate'],
+  id: 'demoCustom'
+});
+</script>
+
+<style>
+.highlightTextarea .highlight {
+  padding:0;
+  margin:0;
+  border:0;
+  border-radius:0;
+}
+
+#demoCustom .highlight {
+  padding:0 3px;
+  margin:-1px -4px;
+  border-radius:0.5em;
+  border:1px solid pink;
+}
+</style>
