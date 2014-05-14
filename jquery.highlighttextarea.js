@@ -1,478 +1,457 @@
-/**
- * jQuery highlightTextarea 2.0
- *
- * Copyright 2012, Damien "Mistic" Sorel
- *    http://www.strangeplanet.fr
- *
- * thanks to Julien L for the main algorythm
- *    http://stackoverflow.com/a/7599199
- *
- * thanks to Pascal Wacker for jQuery wrapper and API methods
- *    pascal.wacker@tilllate.com
- *
- * Dual licensed under the MIT or GPL Version 3 licenses.
- *    http://www.opensource.org/licenses/mit-license.php
- *    http://www.gnu.org/licenses/gpl.html
- *
- * Depends:
- *	  jquery.js
- *    jquery-ui.js | resizable (optional)
+/*!
+ * jQuery highlightTextarea v3.0.0
+ * Copyright 2014 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+ * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
-  
+/*
+ * Dependencies:
+ *    - jQuery
+ *    - jQueryUI (optional)
+ */
 
-(function($) {
-    /**
-     * Plugin declaration
-     */
-    $.fn.highlightTextarea = function(options) {
-        // callable public methods
-        var callable = ['highlight','enable','disable','setOptions','setWords'];
-        
-        var plugin = $(this).data('highlightTextarea');
-        
-        // already instantiated and trying to execute a method
-        if (plugin && typeof options === 'string') {
-            if ($.inArray(options,callable)!==false) {
-                return plugin[options].apply(plugin, Array.prototype.slice.call(arguments, 1));
-            }
-            else {
-                throw 'Method "' + options + '" does not exist on jQuery.highlightTextarea';
-            }
+(function($){
+    "use strict";
+
+    // Highlighter CLASS DEFINITON
+    // ===============================
+    var Highlighter = function($el, options) {
+        // global variables
+        this.settings = $.extend(true, {}, Highlighter.DEFAULTS, options);
+        this.regParam = this.settings.caseSensitive ? 'gm' : 'gim';
+        this.scrollbarWidth = Utilities.getScrollbarWidth();
+        this.isInput = $el[0].tagName.toLowerCase()=='input';
+        this.active = false;
+
+        // build HTML
+        this.$el = $el;
+
+        this.$el.wrap('<div class=highlightTextarea></div>');
+        this.$main = this.$el.parent();
+
+        this.$main.prepend('<div class=container><div class=highlighter></div></div>');
+        this.$container = this.$main.children().first();
+        this.$highlighter = this.$container.children();
+
+        // set id
+        if (this.settings.id) {
+            this.$main[0].id = this.settings.id;
         }
-        // not instantiated and trying to pass options object (or nothing)
-        else if (!plugin && (typeof options === 'object' || !options)) {
-            if (!options) {
-                options = {};
-            }
-            
-            // extend defaults
-            options = $.extend({}, $.fn.highlightTextarea.defaults, options);
-            options.regParam = options.caseSensitive ? 'gm' : 'gim';
 
-            // for each element instantiate the plugin
-            return this.each(function() {
-                var plugin = $(this).data('highlightTextarea');
-
-                // create new instance of the plugin if the plugin isn't initialised
-                if (!plugin) {
-                    plugin = new $.highlightTextarea($(this), options);
-                    plugin.init();
-                    $(this).data('highlightTextarea', plugin);
-                }
-            });
+        // resizable
+        if (this.settings.resizable) {
+            this.applyResizable();
         }
-    }
-    
-    /**
-     * Defaults
-     */
-    $.fn.highlightTextarea.defaults = {
-        words:         [],
-        color:         '#ffff00',
-        caseSensitive: true,
-        resizable:     false,
-        id:            null,
-        debug:         false
+
+        // debug
+        if (this.settings.debug) {
+            this.$main.addClass('debug');
+        }
+
+        // run
+        this.updateCss();
+        this.bindEvents();
+        this.highlight();
     };
 
-    /**
-     * Main plugin function
+    Highlighter.DEFAULTS = {
+        words: [],
+        color: '#ffff00',
+        caseSensitive: true,
+        resizable: false,
+        id: '',
+        debug: false
+    };
+
+    // PUBLIC METHODS
+    // ===============================
+    /*
+     * Refresh highlight
      */
-    $.highlightTextarea = function(element, options) {
-        this.options = options;
-        
-        if (element instanceof jQuery) {
-            this.$textarea = element;
+    Highlighter.prototype.highlight = function() {
+        var text = Utilities.htmlEntities(this.$el.val());
+
+        if (this.settings.words.length > 0) {
+            var replace = [];
+
+            for (var i=0, l=this.settings.words.length; i<l; i++) {
+                replace.push(Utilities.htmlEntities(this.settings.words[i]));
+            }
+
+            text = text.replace(
+                new RegExp('('+ replace.join('|') +')', this.regParam),
+                '<span class="highlight" style="background-color:'+ this.settings.color +';">$1</span>'
+            );
+        }
+
+        this.$highlighter.html(text);
+        this.updateSizePosition();
+    };
+
+    /*
+     * Change options
+     * @param options {object}
+     */
+    Highlighter.prototype.setOptions = function(options) {
+        if (typeof options != 'object' || $.isEmptyObject(options)) {
+            return;
+        }
+
+        this.settings = $.extend(true, {}, this.settings, options);
+        this.regParam = this.settings.caseSensitive ? 'gm' : 'gim';
+
+        if (this.settings.debug) {
+            this.$main.addClass('debug');
         }
         else {
-            this.$textarea = $(element);
+            this.$main.removeClass('debug');
         }
-        
-        this.$main = null;
-        this.$highlighterContainer = null;
-        this.$highlighter = null;
-        
-        
-        /*
-         * init the plugin
-         * scope: private
-         */
-        this.init = function() {
-						//Determine scrollbar width
-						this.scrollbarWidth = this.getScrollbarWidth();
-						
-            // build the HTML wrapper
-            if (this.$textarea.closest('.highlightTextarea').length <= 0) {
-                this.$textarea.wrap('<div class="highlightTextarea" />');
-            }
-            this.$main = this.$textarea.parent('.highlightTextarea');
 
-            if (this.$main.find('.highlighterContainer').length <= 0) {
-                this.$main.prepend('<div class="highlighterContainer"></div>');
-            }
-            this.$highlighterContainer = this.$main.children('.highlighterContainer');
-            
-            if (this.$highlighterContainer.find('.highlighter').length <= 0) {
-                this.$highlighterContainer.html('<div class="highlighter"></div>');
-            }
-            this.$highlighter = this.$highlighterContainer.children('.highlighter');
-
-            // set id
-            if (this.options.id != null) {
-                this.$main.attr('id', this.options.id);
-            }
-
-            // set css
-            this.updateCss();
-
-            // bind the events
-            this.bindEvents();
-
-            // apply the resizeable
-            this.applyResizable();
-
-            // highlight content
+        if (this.active) {
             this.highlight();
-        }
-
-        /*
-         * compute highlight
-         * @param delay: boolean - use a delayed update
-         * scope: public
-         */
-        this.highlight = function(delay) {
-            if (delay==null || delay==false) {
-                this.applyText(this.$textarea.val());
-            }
-            else {
-                this.condensator($.proxy(function(){ 
-                  this.applyText(this.$textarea.val()); 
-                }, this), 100, 300);
-            }
-            
-            return this.$textarea.data('highlightTextareaEvents')===true;
-        }
-
-        /*
-         * update plugin options
-         * scope: public
-         */
-        this.setOptions = function(options) {
-            if (typeof options != 'object') {
-                options = {};
-            }
-            
-            this.options = $.extend({}, this.options, options);
-            this.options.regParam = this.options.caseSensitive ? 'g' : 'gi';
-            
-            if (this.options.debug) {
-                this.$highlighter.addClass('debug');
-            }
-            else {
-                this.$highlighter.removeClass('debug');
-            }
-            
-            if (this.$textarea.data('highlightTextareaEvents')===true) {
-                this.highlight();
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-
-        /*
-         * update words list
-         * scope: public
-         */
-        this.setWords = function(words) {
-            if (typeof words !== 'string' && !(words instanceof Array)) {
-                words = [];
-            }
-            else if (typeof words === 'string') {
-                words = [words];
-            }
-            this.options.words = words;
-            
-            if (this.$textarea.data('highlightTextareaEvents')===true) {
-                this.highlight();
-                return true;
-            }
-            else {
-                return false;
-            }
-        }
-        
-        /*
-         * add events handlers
-         * scope: private
-         */
-        this.bindEvents = function() {
-            var events = this.$textarea.data('highlightTextareaEvents');
-            
-            if (typeof events != 'boolean' || events !== true) {
-                // prevend positionning errors by allways focusing the textarea
-                this.$highlighter.on({
-                  'click.highlightTextarea' : $.proxy(function(){ this.$textarea.focus(); }, this)
-                });
-                
-                // add triggers to textarea
-                this.$textarea.on({
-                    'input.highlightTextarea' :  $.proxy(function(){ this.highlight(true); }, this),
-                    'resize.highlightTextarea' : $.proxy(function(){ this.updateSizePosition(true); }, this),
-                    'scroll.highlightTextarea' : $.proxy(function(){ this.updateSizePosition(); }, this)
-                });
-
-								//For <input> elements, also call updateSizePosition() on a more comprehensive set of events.  (<input> elements don't seem to trigger the scroll event, so we have to detect changes through more creative means...)
-								if(this.$textarea[0].tagName.toLowerCase()=='input') {
-	                this.$textarea.on({
-										//The slight delay below helps prevent Cmd-Left Arrow and Cmd-Right Arrow on Mac from behaving strangely.  (With this delay removed, the highlight is only updated after Cmd is released)
-                    'keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea input.highlightTextarea2 select.highlightTextarea' : $.proxy(function(){ setTimeout($.proxy(function() { this.updateSizePosition(); }, this), 1); }, this),
-                    'mouseover.highlightTextarea' : $.proxy(function(){ this.inputRefreshInterval = setInterval($.proxy(function() { this.updateSizePosition(); }, this), 100); }, this), //Respond to horizontal mouse scrolling (again, we can't use the scroll event, so this is the second best option.  Feel free to comment out the mouseover and mouseout handlers if you can't spare the extra CPU required for polling)
-                    'mouseout.highlightTextarea' : $.proxy(function(){ clearInterval(this.inputRefreshInterval); this.updateSizePosition(); }, this)
-	                });
-								}
-
-                this.$textarea.data('highlightTextareaEvents', true);
-            }
-        }
-          
-        /*
-         * remove event handlers
-         * scope: private
-         */
-        this.unbindEvents = function() {
-            this.$highlighter.off('click.highlightTextarea');
-            this.$textarea.off('input.highlightTextarea scroll.highlightTextarea resize.highlightTextarea keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea input.highlightTextarea2 select.highlightTextarea mouseover.highlightTextarea mouseout.highlightTextarea');
-            this.$textarea.data('highlightTextareaEvents', false);
-        }
-        
-        /*
-         * enable the highlighting
-         * scope: public
-         */
-        this.enable = function() {
-            this.bindEvents();
-            this.highlight();
-        }
-        
-        /*
-         * disable the highlighting
-         * scope: public
-         */
-        this.disable = function() {
-            this.unbindEvents();
-            this.$highlighter.html(this.html_entities(this.$textarea.val()));
-        }
-
-        /*
-         * set style of containers
-         * scope: private
-         */
-        this.updateCss = function() {
-            // the main container has the same size and position than the original textarea
-            this.cloneCss(this.$textarea, this.$main, [
-                'float','vertical-align'
-            ]);
-            this.$main.css({
-                'width':  this.$textarea.outerWidth(true),
-                'height': this.$textarea.outerHeight(true)
-            });
-            
-            // the highlighter container is positionned at "real" top-left corner of the textarea and takes its background
-            this.cloneCss(this.$textarea, this.$highlighterContainer, [
-                'background','background-image','background-color','background-position','background-repeat','background-origin','background-clip','background-size',
-                'padding-top','padding-right','padding-bottom','padding-left'
-            ]);
-            this.$highlighterContainer.css({
-                'top':    this.toPx(this.$textarea.css('margin-top')) + this.toPx(this.$textarea.css('border-top-width')),
-                'left':   this.toPx(this.$textarea.css('margin-left')) + this.toPx(this.$textarea.css('border-left-width')),
-                'width':  this.$textarea.width(),
-                'height': this.$textarea.height()
-            });
-            
-            // the highlighter has the same size than the "inner" textarea and must have the same font properties
-            this.cloneCss(this.$textarea, this.$highlighter, [
-                'font-size','font-family','font-style','font-weight','line-height',
-                'vertical-align','word-spacing','text-align'
-            ]);
-            this.$highlighter.css({
-                'width':  this.$textarea.width(),
-                'height': this.$textarea.height()
-            });
-            
-            // now make the textarea transparent to see the highlighter throught
-            this.$textarea.css({
-                'background': 'none',
-            });
-            
-            // display highlighter text for debuging
-            if (this.options.debug) {
-                this.$highlighter.addClass('debug');
-            }
-        }
-        
-        /*
-         * set textarea as resizable
-         * scope: private
-         */
-        this.applyResizable = function() {
-            if (this.options.resizable && jQuery.ui) {
-                this.$textarea.resizable({
-                    'handles': 'se',
-                    'resize':  $.proxy(function() { this.updateSizePosition(true); }, this)
-                });
-            }
-        }
-
-        /*
-         * replace $highlighter html with formated $textarea content
-         * scope: private
-         */
-        this.applyText = function(text) {
-            text = this.html_entities(text);
-            
-            if (this.options.words.length > 0) {
-                replace = new Array();
-                
-                for (var i=0; i<this.options.words.length; i++) {
-                  replace.push(this.html_entities(this.options.words[i]));
-                }
-                
-                text = text.replace(
-                  new RegExp('('+replace.join('|')+')', this.options.regParam), 
-                  "<span class=\"highlight\" style=\"background-color:"+this.options.color+";\">$1</span>"
-                );
-            }
-            
-            this.$highlighter.html(text);
-            this.updateSizePosition();
-        }
-
-        /*
-         * adapt $highlighter size and position according to $textarea size and scroll bar
-         * @param forced: boolean - update containers size
-         * scope: private
-         */
-        this.updateSizePosition = function(forced) {
-            // resize containers
-            if (forced) {
-                this.$main.css({
-                    'width':  this.$textarea.outerWidth(true),
-                    'height': this.$textarea.outerHeight(true)
-                });
-                this.$highlighterContainer.css({
-                    'width':  this.$textarea.width(),
-                    'height': this.$textarea.height()
-                });
-            }
-            
-						//If there is a vertical scrollbar, account for its width
-            if (
-              (this.$textarea[0].clientHeight < this.$textarea[0].scrollHeight && this.$textarea.css('overflow') != 'hidden' && this.$textarea.css('overflow-y') != 'hidden')
-              || this.$textarea.css('overflow') == 'scroll' || this.$textarea.css('overflow-y') == 'scroll'
-            ) {
-                var padding = this.scrollbarWidth;
-            }
-						//No vertical scrollbar detected
-            else {
-                var padding = 0;
-            }
-            
-						var width = this.$textarea[0].tagName.toLowerCase()=='input' ? 99999 : this.$textarea.width()-padding; //TODO: There's got to be a better way of going about this than just using 99999px...
-            this.$highlighter.css({
-                'width':         width,
-                'height':        this.$textarea.height()+this.$textarea.scrollTop(),
-                'padding-right': padding,
-                'top':           -this.$textarea.scrollTop(),
-                'left':          -this.$textarea.scrollLeft()
-            });
-        }
-				
-				//Adapted from http://benalman.com/projects/jquery-misc-plugins/#scrollbarwidth
-				this.getScrollbarWidth = function() {
-			    var parent,
-			      child;
-    
-			    if ( typeof width === 'undefined' ) {
-			      parent = $('<div style="width:50px;height:50px;overflow:auto"><div/></div>').appendTo('body');
-			      child = parent.children();
-			      width = child.innerWidth() - child.height( 99 ).innerWidth();
-			      parent.remove();
-			    }
-    
-			    return width;
-				}
-
-        /*
-         * set 'to' css attributes listed in 'what' as defined for 'from'
-         * scope: private
-         */
-        this.cloneCss = function(from, to, what) {
-            for (var i=0; i<what.length; i++) {
-                to.css(what[i], from.css(what[i]));
-            }
-        }
-
-        /*
-         * clean/convert px and em size to px size (without 'px' suffix)
-         * scope: private
-         */
-        this.toPx = function(value) {
-            if (value != value.replace('em', '')) {
-                // https://github.com/filamentgroup/jQuery-Pixel-Em-Converter
-                var that = parseFloat(value.replace('em', '')),
-                    scopeTest = $('<div style="display:none;font-size:1em;margin:0;padding:0;height:auto;line-height:1;border:0;">&nbsp;</div>').appendTo('body'),
-                    scopeVal = scopeTest.height();
-                scopeTest.remove();
-                return Math.round(that * scopeVal);
-            }
-            else if (value != value.replace('px', '')) {
-                return parseInt(value.replace('px', ''));
-            }
-            else {
-                return parseInt(value);
-            }
-        }
-        
-        /*
-         * apply html entities
-         * scope: private
-         */
-        this.html_entities = function(value) {
-            if (value) {
-                return $('<div />').text(value).html();
-            }
-            else {
-                return '';
-            }
-        }
-        
-        /*
-         * add a delay with age limit to a method
-         * scope: private
-         */
-        var timer = null;
-        var startTime = null;
-        this.condensator = function(callback, ms, limit) {
-            if (limit==null) {
-              limit=ms;
-            }
-            
-            var date = new Date();
-            clearTimeout(timer);
-            
-            if (startTime==null) {
-                startTime = date.getTime();
-            }
-            
-            if (date.getTime() - startTime > limit) {
-                callback.call();
-                startTime = date.getTime();
-            }
-            else {
-                timer = setTimeout(callback, ms);
-            }
         }
     };
-})(jQuery);
+
+    /*
+     * Change highlighted words
+     * @param words {string|string[]}
+     */
+    Highlighter.prototype.setWords = function(words) {
+        if (typeof words !== 'string' && !(words instanceof Array)) {
+            words = [];
+        }
+        else if (typeof words === 'string') {
+            words = [words];
+        }
+        this.settings.words = words;
+
+        if (this.active) {
+            this.highlight();
+        }
+    };
+
+    /*
+     * Enable highlight and events
+     */
+    Highlighter.prototype.enable = function() {
+        this.bindEvents();
+        this.highlight();
+    };
+
+    /*
+     * Disable highlight and events
+     */
+    Highlighter.prototype.disable = function() {
+        this.unbindEvents();
+        this.$highlighter.empty();
+    };
+
+    /*
+     * Remove the plugin
+     */
+    Highlighter.prototype.destroy = function() {
+        this.disable();
+
+        Utilities.cloneCss(this.$container, this.$el, [
+            'background-image','background-color','background-position','background-repeat',
+            'background-origin','background-clip','background-size','background-attachment'
+        ]);
+
+        this.$main.replaceWith(this.$el);
+
+        this.$el.removeData('highlighter');
+    };
+
+    // PRIVATE METHODS
+    // ===============================
+    /*
+     * Attach event listeners
+     */
+    Highlighter.prototype.bindEvents = function() {
+        if (this.active) {
+            return;
+        }
+        this.active = true;
+
+        var that = this;
+
+        // prevent positioning errors by always focusing the textarea
+        this.$highlighter.on({
+            'this.highlighter': function() {
+                that.$el.focus();
+            }
+        });
+
+        // add triggers to textarea
+        this.$el.on({
+            'input.highlighter': Utilities.throttle(function() {
+                this.highlight();
+            }, 100, this),
+
+            'resize.highlighter': Utilities.throttle(function() {
+                this.updateSizePosition(true);
+            }, 50, this),
+
+            'scroll.highlighter select.highlighter': Utilities.throttle(function() {
+                this.updateSizePosition();
+            }, 50, this)
+        });
+
+        if (this.isInput) {
+            this.$el.on({
+                // Prevent Cmd-Left Arrow and Cmd-Right Arrow on Mac strange behavior
+                'keydown.highlighter keypress.highlighter keyup.highlighter': function() {
+                    setTimeout($.proxy(that.updateSizePosition, that), 1);
+                },
+
+                // Force Chrome behavior on all browsers: reset input position on blur
+                'blur.highlighter': function() {
+                    this.value = this.value;
+                    this.scrollLeft = 0;
+                    that.updateSizePosition.call(that);
+                }
+            });
+        }
+    };
+
+    /*
+     * Detach event listeners
+     */
+    Highlighter.prototype.unbindEvents = function() {
+        if (!this.active) {
+            return;
+        }
+        this.active = false;
+
+        this.$highlighter.off('click.highlighter');
+        this.$el.off('input.highlighter resize.highlighter scroll.highlighter'
+            +' keydown.highlighter keypress.highlighter keyup.highlighter'
+            +' select.highlighter blur.highlighter');
+    };
+
+    /*
+     * Update CSS of wrapper and containers
+     */
+    Highlighter.prototype.updateCss = function() {
+        // the main container has the same size and position than the original textarea
+        Utilities.cloneCss(this.$el, this.$main, [
+            'float','vertical-align'
+        ]);
+        this.$main.css({
+            'width':    this.$el.outerWidth(true),
+            'height': this.$el.outerHeight(true)
+        });
+
+        // the highlighter container is positionned at "real" top-left corner of the textarea and takes its background
+        Utilities.cloneCss(this.$el, this.$container, [
+            'background-image','background-color','background-position','background-repeat',
+            'background-origin','background-clip','background-size','background-attachment',
+            'padding-top','padding-right','padding-bottom','padding-left'
+        ]);
+        this.$container.css({
+            'top':        Utilities.toPx(this.$el.css('margin-top')) + Utilities.toPx(this.$el.css('border-top-width')),
+            'left':     Utilities.toPx(this.$el.css('margin-left')) + Utilities.toPx(this.$el.css('border-left-width')),
+            'width':    this.$el.width(),
+            'height': this.$el.height()
+        });
+
+        // the highlighter has the same size than the "inner" textarea and must have the same font properties
+        Utilities.cloneCss(this.$el, this.$highlighter, [
+            'font-size','font-family','font-style','font-weight','font-variant','font-stretch',
+            'line-height','vertical-align','word-spacing','text-align','letter-spacing'
+        ]);
+
+        // now make the textarea transparent to see the highlighter through
+        this.$el.css({
+            'background': 'none'
+        });
+    };
+
+    /*
+     * Apply jQueryUi Resizable if available
+     */
+    Highlighter.prototype.applyResizable = function() {
+        if (jQuery.ui) {
+            this.$el.resizable({
+                'handles': 'se',
+                'resize': Utilities.throttle(function() {
+                    this.updateSizePosition(true);
+                }, 50, this)
+            });
+        }
+    };
+
+    /*
+     * Update size and position of the highlighter
+     * @param forced {boolean} true to resize containers
+     */
+    Highlighter.prototype.updateSizePosition = function(forced) {
+        // resize containers
+        if (forced) {
+            this.$main.css({
+                'width':    this.$el.outerWidth(true),
+                'height': this.$el.outerHeight(true)
+            });
+            this.$container.css({
+                'width':    this.$el.width(),
+                'height': this.$el.height()
+            });
+        }
+
+        var padding = 0, width;
+
+        if (!this.isInput) {
+            // account for vertical scrollbar width
+            if ((
+                    this.$el[0].clientHeight < this.$el[0].scrollHeight
+                    && this.$el.css('overflow') != 'hidden'
+                    && this.$el.css('overflow-y') != 'hidden'
+                )
+                || this.$el.css('overflow') == 'scroll'
+                || this.$el.css('overflow-y') == 'scroll'
+            ) {
+                padding = this.scrollbarWidth;
+            }
+
+            width = this.$el.width()-padding;
+        }
+        else {
+            // TODO: There's got to be a better way of going about this than just using 99999px...
+            width = 99999;
+        }
+
+        this.$highlighter.css({
+            'width': width,
+            'height': this.$el.height() + this.$el.scrollTop(),
+            'top': -this.$el.scrollTop(),
+            'left': -this.$el.scrollLeft()
+        });
+    };
+
+
+    // Utilities CLASS DEFINITON
+    // ===============================
+    var Utilities = function(){};
+
+    /*
+     * Get the scrollbar with on this browser
+     */
+    Utilities.getScrollbarWidth = function() {
+        var parent = $('<div style="width:50px;height:50px;overflow:auto"><div>&nbsp;</div></div>').appendTo('body'),
+            child = parent.children(),
+            width = child.innerWidth() - child.height(100).innerWidth();
+
+        parent.remove();
+
+        return width;
+    };
+
+    /*
+     * Copy a list of CSS properties from one object to another
+     * @param from {jQuery}
+     * @param to {jQuery}
+     * @param what {string[]}
+     */
+    Utilities.cloneCss = function(from, to, what) {
+        for (var i=0, l=what.length; i<l; i++) {
+            to.css(what[i], from.css(what[i]));
+        }
+    };
+
+    /*
+     * Convert a size value to pixels value
+     * @param value {mixed}
+     * @return {int}
+     */
+    Utilities.toPx = function(value) {
+        if (value != value.replace('em', '')) {
+            var el = $('<div style="font-size:1em;margin:0;padding:0;height:auto;line-height:1;border:0;">&nbsp;</div>').appendTo('body');
+            value = Math.round(parseFloat(value.replace('em', '')) * el.height());
+            el.remove();
+            return value;
+        }
+        else if (value != value.replace('px', '')) {
+            return parseInt(value.replace('px', ''));
+        }
+        else {
+            return parseInt(value);
+        }
+    };
+
+    /*
+     * Converts HTMl entities
+     * @param str {string}
+     * @return {string}
+     */
+    Utilities.htmlEntities = function(str) {
+        if (str) {
+            return $('<div></div>').text(str).html();
+        }
+        else {
+            return '';
+        }
+    };
+
+    /*
+     * Apply throttling to a callback
+     * @param callback {function}
+     * @param delay {int} milliseconds
+     * @param context {object|null}
+     * @return {function}
+     */
+    Utilities.throttle = function(callback, delay, context) {
+        var state = {
+            pid: null,
+            last: 0
+        };
+
+        return function() {
+            var elapsed = new Date().getTime() - state.last,
+                    args = arguments,
+                    that = this;
+
+            function exec() {
+                state.last = new Date().getTime();
+
+                if (context) {
+                    return callback.apply(context, Array.prototype.slice.call(args));
+                }
+                else {
+                    return callback.apply(that, Array.prototype.slice.call(args));
+                }
+            }
+
+            if (elapsed > delay) {
+                return exec();
+            }
+            else {
+                clearTimeout(state.pid);
+                state.pid = setTimeout(exec, delay - elapsed);
+            }
+        };
+    };
+
+
+    // JQUERY PLUGIN DEFINITION
+    // ===============================
+    $.fn.highlightTextarea = function(option) {
+        var args = arguments;
+
+        return this.each(function() {
+            var $this = $(this),
+                data = $this.data('highlighter'),
+                options = typeof option == 'object' && option;
+ console.log(data);
+            if (!data && option == 'destroy') {
+                return;
+            }
+            if (!data) {
+                data = new Highlighter($this, options);
+                $this.data('highlighter', data);
+            }
+            if (typeof option == 'string') {
+            console.log(option)
+                data[option].apply(data, Array.prototype.slice.call(args, 1));
+            }
+        });
+    };
+}(jQuery));

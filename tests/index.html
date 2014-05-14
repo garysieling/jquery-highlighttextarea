@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>jQuery • highlightTextarea</title>
+
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+
+  <link href="../jquery.highlighttextarea.css" rel="stylesheet">
+  <script src="../jquery.highlighttextarea.js"></script>
+
+  <script>
+  $(document).ready(function() {
+      $('#demo1').highlightTextarea({
+          words: ['Lorem ipsum','vulputate'],
+          color: '#ADF0FF',
+          debug: true
+      });
+      $('#demo2').highlightTextarea({
+          words: ['lOrEm IpSuM','VULPUTATE'],
+          caseSensitive: false,
+          debug: true
+      });
+      $('#demo3').highlightTextarea({
+          words: ['Lorem ipsum','Nam varius','Nullam'],
+          resizable: true,
+          debug: true
+      });
+      $('#demo4').highlightTextarea({
+          words: ['\{(.+?)\}'],
+          debug: true
+      });
+      $('#demo5').highlightTextarea({
+          words: ['Lorem ipsum','vulputate'],
+          color:'#99f',
+          id: 'demo5-wrap',
+          debug: true
+      });
+      $('#demo6').highlightTextarea({
+          words: ['Lorem ipsum','vulputate'],
+          debug: true
+      });
+      $('#demo7').highlightTextarea({
+          words: ['Lorem ipsum','vulputate']
+      });
+      $('#demo7-tools .disable').click(function(e) {
+          $('#demo7').highlightTextarea('disable');
+          e.preventDefault();
+      });
+      $('#demo7-tools .enable').click(function(e) {
+          $('#demo7').highlightTextarea('enable');
+          e.preventDefault();
+      });
+      $('#demo7-tools .setWords').click(function(e) {
+          $('#demo7').highlightTextarea('setWords', ['Quisque','auctor']);
+          e.preventDefault();
+      });
+      $('#demo7-tools .color').click(function(e) {
+          $('#demo7').highlightTextarea('setOptions', {color: '#ADF0FF'});
+          e.preventDefault();
+      });
+      $('#demo7-tools .destroy').click(function(e) {
+          $('#demo7').highlightTextarea('destroy');
+          $('#demo7-tools').hide();
+          e.preventDefault();
+      });
+      $('#demo7-tools .debug').click(function(e) {
+          $('#demo7').highlightTextarea('setOptions', {debug: true});
+          e.preventDefault();
+      });
+  });
+  </script>
+
+  <style>
+  #demo5-wrap .highlight {
+      padding:0 3px;
+      margin:0 -3px;
+      border-radius:0.5em;
+  }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>jQuery • highlightTextarea</h1>
+</header>
+
+<section>
+  <article>
+    <h3>Change color</h3>
+
+    <textarea id="demo1" cols="50" rows="6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </article>
+
+  <article>
+    <h3>Case insensitive</h3>
+
+    <textarea id="demo2" cols="50" rows="5">Lorem IPsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis VULPutate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </article>
+
+  <article>
+    <h3>Resizable (jQuery UI)</h3>
+
+    <textarea id="demo3" cols="50" rows="5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </article>
+
+  <article>
+    <h3>Use regular expressions (Smarty tags)</h3>
+
+    <textarea id="demo4" cols="50" rows="4">
+<ul>
+{foreach from=$list item=row}
+  <li>{$row.name}</li>
+{/foreach}
+</ul>
+    </textarea>
+  </article>
+
+  <article>
+    <h3>Customise highlight element</h3>
+
+    <textarea id="demo5" cols="50" rows="5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </article>
+
+  <article>
+    <h3>&lt;input&gt; elements</h3>
+
+    <input id="demo6" size=50 value="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.">
+  </article>
+
+  <article>
+    <h3>API</h3>
+    <div id="demo7-tools">
+      <a href="#" class="disable">Disable</a> |
+      <a href="#" class="enable">Enable</a> |
+      <a href="#" class="setWords">Change words</a> |
+      <a href="#" class="color">Change color</a> |
+      <a href="#" class="destroy">Destroy</a> |
+      <a href="#" class="debug">Debug</a>
+    </div>
+
+    <textarea id="demo7" cols="50" rows="5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </article>
+</section>
+
+<footer>&copy; 2014 <a href="http://www.strangeplanet.fr">strangeplanet.fr</a> - Created by Damien "Mistic" Sorel</footer>
+
+</body>
+</html>
