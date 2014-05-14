@@ -1,7 +1,7 @@
 # base url used to resolved all internal links with pages and resources
 # set it empty when testing on local
 # set it to https://user.github.io/project before publishing
-baseurl: https://mistic100.github.is/jQuery-highlightTextarea
+baseurl: https://mistic100.github.io/jQuery-highlightTextarea
 
 # name of the software
 name: jQuery highlightTextarea
