@@ -17,6 +17,7 @@
     var Highlighter = function($el, options) {
         // global variables
         this.settings = $.extend(true, {}, Highlighter.DEFAULTS, options);
+        this.settings.words = Utilities.cleanWords(this.settings.words, this.settings.color);
         this.regParam = this.settings.caseSensitive ? 'gm' : 'gim';
         this.scrollbarWidth = Utilities.getScrollbarWidth();
         this.isInput = $el[0].tagName.toLowerCase()=='input';
@@ -68,20 +69,15 @@
      * Refresh highlight
      */
     Highlighter.prototype.highlight = function() {
-        var text = Utilities.htmlEntities(this.$el.val());
+        var text = Utilities.htmlEntities(this.$el.val()),
+            that = this;
 
-        if (this.settings.words.length > 0) {
-            var replace = [];
-
-            for (var i=0, l=this.settings.words.length; i<l; i++) {
-                replace.push(Utilities.htmlEntities(this.settings.words[i]));
-            }
-
+        $.each(this.settings.words, function(color, words) {
             text = text.replace(
-                new RegExp('('+ replace.join('|') +')', this.regParam),
-                '<span class="highlight" style="background-color:'+ this.settings.color +';">$1</span>'
+                new RegExp('('+ words.join('|') +')', that.regParam),
+                '<span class="highlight" style="background-color:'+ color +';">$1</span>'
             );
-        }
+        });
 
         this.$highlighter.html(text);
         this.updateSizePosition();
@@ -98,6 +94,10 @@
 
         this.settings = $.extend(true, {}, this.settings, options);
         this.regParam = this.settings.caseSensitive ? 'gm' : 'gim';
+
+        if (options.words) {
+          this.settings.words = Utilities.cleanWords(options.words);
+        }
 
         if (this.settings.debug) {
             this.$main.addClass('debug');
@@ -116,13 +116,7 @@
      * @param words {string|string[]}
      */
     Highlighter.prototype.setWords = function(words) {
-        if (typeof words !== 'string' && !(words instanceof Array)) {
-            words = [];
-        }
-        else if (typeof words === 'string') {
-            words = [words];
-        }
-        this.settings.words = words;
+        this.settings.words = Utilities.cleanWords(words);
 
         if (this.active) {
             this.highlight();
@@ -430,6 +424,46 @@
         };
     };
 
+    /*
+     * Formats a list of words into a hash of arrays (Color => Words list)
+     * @param words {mixed}
+     * @param color {string} default color
+     * @return {object[]}
+     */
+    Utilities.cleanWords = function(words, color) {
+        var out = {};
+
+        if (!$.isArray(words)) {
+            words = [words];
+        }
+
+        for (var i=0, l=words.length; i<l; i++) {
+            if ($.isPlainObject(words[i])) {
+                var group = words[i];
+
+                if (!out[group.color]) {
+                    out[group.color] = [];
+                }
+                if (!$.isArray(group.words)) {
+                    group.words = [group.words];
+                }
+
+                for (var j=0, m=group.words.length; j<m; j++) {
+                    out[group.color].push(Utilities.htmlEntities(group.words[j]));
+                }
+            }
+            else {
+                if (!out[color]) {
+                    out[color] = [];
+                }
+
+                out[color].push(Utilities.htmlEntities(words[i]));
+            }
+        }
+
+        return out;
+    };
+
 
     // JQUERY PLUGIN DEFINITION
     // ===============================
@@ -440,7 +474,7 @@
             var $this = $(this),
                 data = $this.data('highlighter'),
                 options = typeof option == 'object' && option;
- console.log(data);
+
             if (!data && option == 'destroy') {
                 return;
             }
@@ -449,7 +483,6 @@
                 $this.data('highlighter', data);
             }
             if (typeof option == 'string') {
-            console.log(option)
                 data[option].apply(data, Array.prototype.slice.call(args, 1));
             }
         });

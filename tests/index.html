@@ -34,7 +34,7 @@
       });
       $('#demo5').highlightTextarea({
           words: ['Lorem ipsum','vulputate'],
-          color:'#99f',
+          color:'#9999FF',
           id: 'demo5-wrap',
           debug: true
       });
@@ -45,6 +45,16 @@
       $('#demo7').highlightTextarea({
           words: ['Lorem ipsum','vulputate']
       });
+      $('#demo8').highlightTextarea({
+          words: [{
+            color: '#ADF0FF',
+            words: 'Lorem ipsum'
+          }, {
+            color: '#FFFF00',
+            words: 'vulputate'
+          }]
+      });
+
       $('#demo7-tools .disable').click(function(e) {
           $('#demo7').highlightTextarea('disable');
           e.preventDefault();
@@ -93,6 +103,12 @@
     <h3>Change color</h3>
 
     <textarea id="demo1" cols="50" rows="6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </article>
+  
+  <article>
+    <h3>Multiple colors</h3>
+    
+    <textarea id="demo8" cols="50" rows="6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
   </article>
 
   <article>
