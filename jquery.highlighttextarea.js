@@ -16,9 +16,7 @@
     // ===============================
     var Highlighter = function($el, options) {
         // global variables
-        this.settings = $.extend(true, {}, Highlighter.DEFAULTS, options);
-        this.settings.words = Utilities.cleanWords(this.settings.words, this.settings.color);
-        this.regParam = this.settings.caseSensitive ? 'gm' : 'gim';
+        this.settings = $.extend({}, Highlighter.DEFAULTS);
         this.scrollbarWidth = Utilities.getScrollbarWidth();
         this.isInput = $el[0].tagName.toLowerCase()=='input';
         this.active = false;
@@ -33,6 +31,8 @@
         this.$container = this.$main.children().first();
         this.$highlighter = this.$container.children();
 
+        this.setOptions(options);
+
         // set id
         if (this.settings.id) {
             this.$main[0].id = this.settings.id;
@@ -43,11 +43,6 @@
             this.applyResizable();
         }
 
-        // debug
-        if (this.settings.debug) {
-            this.$main.addClass('debug');
-        }
-
         // run
         this.updateCss();
         this.bindEvents();
@@ -55,7 +50,8 @@
     };
 
     Highlighter.DEFAULTS = {
-        words: [],
+        words: {},
+        ranges: {},
         color: '#ffff00',
         caseSensitive: true,
         resizable: false,
@@ -79,48 +75,29 @@
             );
         });
 
+        $.each(this.settings.ranges, function(i, range) {
+            text = Utilities.strInsert(text, range.end, '</span>');
+            text = Utilities.strInsert(text, range.start, '<span class="highlight" style="background-color:'+ range.color +';">');
+        });
+
         this.$highlighter.html(text);
         this.updateSizePosition();
     };
 
     /*
-     * Change options
-     * @param options {object}
+     * Change highlighted words
+     * @param words {mixed}
      */
-    Highlighter.prototype.setOptions = function(options) {
-        if (typeof options != 'object' || $.isEmptyObject(options)) {
-            return;
-        }
-
-        this.settings = $.extend(true, {}, this.settings, options);
-        this.regParam = this.settings.caseSensitive ? 'gm' : 'gim';
-
-        if (options.words) {
-          this.settings.words = Utilities.cleanWords(options.words);
-        }
-
-        if (this.settings.debug) {
-            this.$main.addClass('debug');
-        }
-        else {
-            this.$main.removeClass('debug');
-        }
-
-        if (this.active) {
-            this.highlight();
-        }
+    Highlighter.prototype.setWords = function(words) {
+        this.setOptions({ words: words, ranges: {} });
     };
 
     /*
-     * Change highlighted words
-     * @param words {string|string[]}
+     * Change highlighted ranges
+     * @param ranges {mixed}
      */
-    Highlighter.prototype.setWords = function(words) {
-        this.settings.words = Utilities.cleanWords(words);
-
-        if (this.active) {
-            this.highlight();
-        }
+    Highlighter.prototype.setRanges = function(ranges) {
+        this.setOptions({ words: {}, ranges: ranges });
     };
 
     /*
@@ -157,6 +134,39 @@
 
     // PRIVATE METHODS
     // ===============================
+    /*
+     * Change options
+     * @param options {object}
+     */
+    Highlighter.prototype.setOptions = function(options) {
+        if (typeof options != 'object' || $.isEmptyObject(options)) {
+            return;
+        }
+
+        $.extend(this.settings, options);
+        this.regParam = this.settings.caseSensitive ? 'gm' : 'gim';
+
+        if (!$.isEmptyObject(this.settings.words)) {
+            this.settings.words = Utilities.cleanWords(this.settings.words, this.settings.color);
+            this.settings.ranges = {};
+        }
+        else if (!$.isEmptyObject(this.settings.ranges)) {
+            this.settings.words = {};
+            this.settings.ranges = Utilities.cleanRanges(this.settings.ranges, this.settings.color);
+        }
+
+        if (this.settings.debug) {
+            this.$main.addClass('debug');
+        }
+        else {
+            this.$main.removeClass('debug');
+        }
+
+        if (this.active) {
+            this.highlight();
+        }
+    };
+
     /*
      * Attach event listeners
      */
@@ -386,6 +396,17 @@
     };
 
     /*
+     * Inserts a string in another string at given position
+     * @param string {string}
+     * @param index {int}
+     * @param value {string}
+     * @return {string}
+     */
+    Utilities.strInsert = function(string, index, value) {
+        return string.slice(0, index) + value + string.slice(index);
+    };
+
+    /*
      * Apply throttling to a callback
      * @param callback {function}
      * @param delay {int} milliseconds
@@ -438,8 +459,9 @@
         }
 
         for (var i=0, l=words.length; i<l; i++) {
-            if ($.isPlainObject(words[i])) {
-                var group = words[i];
+            var group = words[i];
+
+            if ($.isPlainObject(group)) {
 
                 if (!out[group.color]) {
                     out[group.color] = [];
@@ -457,9 +479,86 @@
                     out[color] = [];
                 }
 
-                out[color].push(Utilities.htmlEntities(words[i]));
+                out[color].push(Utilities.htmlEntities(group));
             }
         }
+
+        return out;
+    };
+
+    /*
+     * Formats a list of ranges into a hash of arrays (Color => Ranges list)
+     * @param ranges {mixed}
+     * @param color {string} default color
+     * @return {object[]}
+     */
+    Utilities.cleanRanges = function(ranges, color) {
+        var out = [];
+
+        if ($.isPlainObject(ranges) || $.isNumeric(ranges[0])) {
+            ranges = [ranges];
+        }
+
+        for (var i=0, l=ranges.length; i<l; i++) {
+            var range = ranges[i];
+
+            if ($.isArray(range)) {
+                out.push({
+                    color: color,
+                    start: range[0],
+                    end: range[1]
+                });
+            }
+            else {
+                if (range.hasOwnProperty('ranges')) {
+                    if ($.isPlainObject(range.ranges) || $.isNumeric(range.ranges[0])) {
+                        range.ranges = [range.ranges];
+                    }
+
+                    for (var j=0, m=range.ranges.length; j<m; j++) {
+                        if ($.isArray(range.ranges[j])) {
+                            out.push({
+                                color: range.color,
+                                start: range.ranges[j][0],
+                                end: range.ranges[j][1]
+                            });
+                        }
+                        else {
+                            if (range.ranges[j].length) {
+                                range.ranges[j].end = range.ranges[j].start + range.ranges[j].length;
+                            }
+                            out.push(range.ranges[j]);
+                        }
+                    }
+                }
+                else {
+                    if (range.length) {
+                        range.end = range.start + range.length;
+                    }
+                    out.push(range);
+                }
+            }
+        }
+
+        out.sort(function(a, b) {
+            if (a.start == b.start) {
+                return a.end - b.end;
+            }
+            return a.start - b.start;
+        });
+
+        var current = -1;
+        $.each(out, function(i, range) {
+            if (range.start >= range.end) {
+                $.error('Invalid range end/start');
+            }
+            if (range.start < current) {
+                $.error('Ranges overlap');
+            }
+            current = range.end;
+        });
+
+        out.reverse();
 
         return out;
     };

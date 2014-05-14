@@ -14,8 +14,10 @@
   <script>
   $(document).ready(function() {
       $('#demo1').highlightTextarea({
-          words: ['Lorem ipsum','vulputate'],
-          color: '#ADF0FF',
+          words: {
+            color: '#ADF0FF',
+            words: ['Lorem ipsum','vulputate']
+          },
           debug: true
       });
       $('#demo2').highlightTextarea({
@@ -34,7 +36,6 @@
       });
       $('#demo5').highlightTextarea({
           words: ['Lorem ipsum','vulputate'],
-          color:'#9999FF',
           id: 'demo5-wrap',
           debug: true
       });
@@ -52,7 +53,19 @@
           }, {
             color: '#FFFF00',
             words: 'vulputate'
-          }]
+          }],
+          debug: true
+      });
+      $('#demo9').highlightTextarea({
+          ranges: [{
+              color: '#ADF0FF',
+              start: 0,
+              length: 5
+          }, {
+              color: '#FFFF00',
+              ranges: [[6, 11], [40, 55]]
+          }],
+          debug: true
       });
 
       $('#demo7-tools .disable').click(function(e) {
@@ -67,8 +80,8 @@
           $('#demo7').highlightTextarea('setWords', ['Quisque','auctor']);
           e.preventDefault();
       });
-      $('#demo7-tools .color').click(function(e) {
-          $('#demo7').highlightTextarea('setOptions', {color: '#ADF0FF'});
+      $('#demo7-tools .setRanges').click(function(e) {
+          $('#demo7').highlightTextarea('setRanges', [[10,20], [40,50]]);
           e.preventDefault();
       });
       $('#demo7-tools .destroy').click(function(e) {
@@ -88,6 +101,7 @@
       padding:0 3px;
       margin:0 -3px;
       border-radius:0.5em;
+      background-color:#9999FF !important;
   }
   </style>
 </head>
@@ -109,6 +123,12 @@
     <h3>Multiple colors</h3>
     
     <textarea id="demo8" cols="50" rows="6">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </article>
+
+  <article>
+    <h3>Ranges</h3>
+
+    <textarea id="demo9" cols="50" rows="5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
   </article>
 
   <article>
@@ -152,8 +172,8 @@
     <div id="demo7-tools">
       <a href="#" class="disable">Disable</a> |
       <a href="#" class="enable">Enable</a> |
-      <a href="#" class="setWords">Change words</a> |
-      <a href="#" class="color">Change color</a> |
+      <a href="#" class="setWords">Set words</a> |
+      <a href="#" class="setRanges">Set ranges</a> |
       <a href="#" class="destroy">Destroy</a> |
       <a href="#" class="debug">Debug</a>
     </div>
