@@ -1,5 +1,5 @@
 {
-    "name": "jQuery-highlightTextarea",
+    "name": "jquery-highlighttextarea",
     "version": "3.0.0",
     "authors": [{
         "name": "Damien \"Mistic\" Sorel",
@@ -21,7 +21,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git://github.com/mistic100/jQuery-highlightTextarea.git"
+        "url": "git://github.com/mistic100/jquery-highlighttextarea.git"
     },
     "ignore": [
         "**/.*",
