@@ -1,14 +1,14 @@
 # base url used to resolved all internal links with pages and resources
 # set it empty when testing on local
 # set it to https://user.github.io/project before publishing
-baseurl: https://mistic100.github.io/jQuery-highlightTextarea
+baseurl: https://mistic100.github.io/jquery-highlighttextarea
 
 # name of the software
 name: jQuery highlightTextarea
 # current version of the software
 version: 3.0.0
 # url of the download button
-downloadUrl: https://github.com/mistic100/jQuery-highlightTextarea
+downloadUrl: https://github.com/mistic100/jquery-highlighttextarea
 # licence of the software
 license: MIT License
 licenseUrl: http://opensource.org/licenses/MIT
@@ -21,14 +21,14 @@ headerLinks:
 # list if additional links on the footer
 footerLinks:
   - title: GitHub
-    url: https://github.com/mistic100/jQuery-highlightTextarea
+    url: https://github.com/mistic100/jquery-highlighttextarea
   - title: Issues
-    url: https://github.com/mistic100/jQuery-highlightTextarea/issues?state=open
+    url: https://github.com/mistic100/jquery-highlighttextarea/issues?state=open
 
 # github button
 githubButton:
   user: mistic100
-  repo: jQuery-highlightTextarea
+  repo: jquery-highlighttextarea
 
 # twitter follow button
 twitterAccount:
