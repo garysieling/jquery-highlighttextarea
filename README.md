@@ -8,4 +8,4 @@ highlightTextarea is a jQuery plugin which allows you to highlight words and sen
 Display is broken on Internet Explorer when a scrollbar is displayed.
 
 # Documentation and Demos
-http://mistic100.github.io/jQuery-highlightTextarea/
+http://mistic100.github.io/jquery-highlighttextarea/
