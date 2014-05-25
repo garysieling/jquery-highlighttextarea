@@ -71,13 +71,13 @@
         $.each(this.settings.words, function(color, words) {
             text = text.replace(
                 new RegExp('('+ words.join('|') +')', that.regParam),
-                '<span class="highlight" style="background-color:'+ color +';">$1</span>'
+                '<mark style="background-color:'+ color +';">$1</mark>'
             );
         });
 
         $.each(this.settings.ranges, function(i, range) {
-            text = Utilities.strInsert(text, range.end, '</span>');
-            text = Utilities.strInsert(text, range.start, '<span class="highlight" style="background-color:'+ range.color +';">');
+            text = Utilities.strInsert(text, range.end, '</mark>');
+            text = Utilities.strInsert(text, range.start, '<mark style="background-color:'+ range.color +';">');
         });
 
         this.$highlighter.html(text);
@@ -510,7 +510,7 @@
                 });
             }
             else {
-                if (range.hasOwnProperty('ranges')) {
+                if (range.ranges) {
                     if ($.isPlainObject(range.ranges) || $.isNumeric(range.ranges[0])) {
                         range.ranges = [range.ranges];
                     }
