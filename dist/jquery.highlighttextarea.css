@@ -8,12 +8,12 @@
   position:relative;
   overflow:hidden;
 }
-.highlightTextarea  .container {
+.highlightTextarea .container {
   position:absolute;
   margin:0;
   overflow:hidden;
 }
-.highlightTextarea  .highlighter {
+.highlightTextarea .highlighter {
   position:relative;
   border:none;
   padding:0;
@@ -24,7 +24,7 @@
   white-space:pre-wrap;
   word-wrap:break-word;
 }
-.highlightTextarea.debug  .highlighter {
+.highlightTextarea.debug .highlighter {
   color:#f00;
   border:1px solid #f00;
   margin:-1px;
@@ -38,7 +38,7 @@
   white-space:pre-wrap;
   word-wrap:break-word;
 }
-.highlightTextarea  .highlight {
+.highlightTextarea mark {
   line-height:inherit;
 }
 .highlightTextarea .ui-wrapper {
