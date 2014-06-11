@@ -1,0 +1,43 @@
+{
+  "name": "jquery-highlighttextarea",
+  "authors": [
+    {
+      "name": "Damien \"Mistic\" Sorel",
+      "homepage": "http://www.strangeplanet.fr"
+    }
+  ],
+  "license": "MIT",
+  "homepage": "http://www.strangeplanet.fr/work/jquery-highlighttextarea",
+  "main": [
+    "jquery.highlighttextarea.css",
+    "jquery.highlighttextarea.js"
+  ],
+  "dependencies": {
+    "jQuery": ">1.9"
+  },
+  "keywords": [
+    "textarea",
+    "input",
+    "highlight"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mistic100/jquery-highlighttextarea.git"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "a1c6236611",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "a1c623661173bf3e176d920d7daad837b791a3f2"
+  },
+  "_source": "git@github.com:mistic100/jquery-highlighttextarea.git",
+  "_target": "master",
+  "_originalSource": "git@github.com:mistic100/jquery-highlighttextarea.git"
+}
