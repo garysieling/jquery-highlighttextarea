@@ -12,7 +12,7 @@
         "jquery.highlighttextarea.js"
     ],
     "dependencies": {
-        "jQuery": ">1.9"
+        "jquery": ">1.9"
     },
     "keywords": [
         "textarea",
