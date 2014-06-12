@@ -1,12 +1,7 @@
 /*!
- * jQuery highlightTextarea v3.0.0
+ * jQuery highlightTextarea
  * Copyright 2014 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
  * Licensed under MIT (http://opensource.org/licenses/MIT)
- */
-/*
- * Dependencies:
- *    - jQuery
- *    - jQueryUI (optional)
  */
 
 (function($){

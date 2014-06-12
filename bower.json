@@ -5,6 +5,7 @@
         "name": "Damien \"Mistic\" Sorel",
         "homepage": "http://www.strangeplanet.fr"
     }],
+    "description": "Allows to highlight words and sentences into textareas",
     "license": "MIT",
     "homepage": "http://www.strangeplanet.fr/work/jquery-highlighttextarea",
     "main": [
