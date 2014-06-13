@@ -256,7 +256,7 @@
         // the highlighter has the same size than the "inner" textarea and must have the same font properties
         Utilities.cloneCss(this.$el, this.$highlighter, [
             'font-size','font-family','font-style','font-weight','font-variant','font-stretch',
-            'line-height','vertical-align','word-spacing','text-align','letter-spacing'
+            'line-height','vertical-align','word-spacing','text-align','letter-spacing', 'text-rendering'
         ]);
 
         // now make the textarea transparent to see the highlighter through

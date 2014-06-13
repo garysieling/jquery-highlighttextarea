@@ -24,10 +24,16 @@
   white-space:pre-wrap;
   word-wrap:break-word;
 }
-.highlightTextarea.debug .highlighter {
-  color:#f00;
-  border:1px solid #f00;
-  margin:-1px;
+  .highlightTextarea.debug .highlighter {
+    color:#f00;
+    border:1px solid #f00;
+    margin:-1px;
+  }
+.highlightTextarea mark {
+  line-height:inherit;
+  color:transparent;
+  margin:0;
+  padding:0;
 }
 .highlightTextarea textarea,
 .highlightTextarea input {
@@ -37,10 +43,6 @@
   resize:none;
   white-space:pre-wrap;
   word-wrap:break-word;
-}
-.highlightTextarea mark {
-  line-height:inherit;
-  color:transparent;
 }
 .highlightTextarea .ui-wrapper {
   margin:0 !important;
