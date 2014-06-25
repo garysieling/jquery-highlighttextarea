@@ -36,14 +36,30 @@ module.exports = function(grunt) {
                     ]
                 }
             }
+        },
+
+        // jshint tests
+        jshint: {
+            lib: {
+                files: {
+                    src: [
+                        'jquery.highlighttextarea.js'
+                    ]
+                }
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
+    grunt.loadNpmTasks('grunt-contrib-jshint');
 
     grunt.registerTask('default', [
         'uglify',
         'cssmin'
+    ]);
+    
+    grunt.registerTask('test', [
+        'jshint'
     ]);
 };

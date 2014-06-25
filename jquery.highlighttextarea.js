@@ -222,9 +222,9 @@
         this.active = false;
 
         this.$highlighter.off('click.highlighter');
-        this.$el.off('input.highlighter resize.highlighter scroll.highlighter'
-            +' keydown.highlighter keypress.highlighter keyup.highlighter'
-            +' select.highlighter blur.highlighter');
+        this.$el.off('input.highlighter resize.highlighter scroll.highlighter' +
+            ' keydown.highlighter keypress.highlighter keyup.highlighter' +
+            ' select.highlighter blur.highlighter');
     };
 
     /*
@@ -300,13 +300,13 @@
 
         if (!this.isInput) {
             // account for vertical scrollbar width
-            if ((
+            if (this.$el.css('overflow') == 'scroll' ||
+                this.$el.css('overflow-y') == 'scroll' ||
+                (
+                    this.$el.css('overflow') != 'hidden' &&
+                    this.$el.css('overflow-y') != 'hidden' &&
                     this.$el[0].clientHeight < this.$el[0].scrollHeight
-                    && this.$el.css('overflow') != 'hidden'
-                    && this.$el.css('overflow-y') != 'hidden'
                 )
-                || this.$el.css('overflow') == 'scroll'
-                || this.$el.css('overflow-y') == 'scroll'
             ) {
                 padding = this.scrollbarWidth;
             }
