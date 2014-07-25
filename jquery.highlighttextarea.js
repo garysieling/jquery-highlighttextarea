@@ -71,8 +71,10 @@
         });
 
         $.each(this.settings.ranges, function(i, range) {
-            text = Utilities.strInsert(text, range.end, '</mark>');
-            text = Utilities.strInsert(text, range.start, '<mark style="background-color:'+ range.color +';">');
+            if (range.start < text.length) {
+                text = Utilities.strInsert(text, range.end, '</mark>');
+                text = Utilities.strInsert(text, range.start, '<mark style="background-color:'+ range.color +';">');
+            }
         });
 
         this.$highlighter.html(text);
