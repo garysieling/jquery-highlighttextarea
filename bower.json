@@ -4,6 +4,6 @@
 
   "dependencies": {
     "jquery-ui": "latest",
-    "jquery-highlighttextarea": "git@github.com:mistic100/jquery-highlighttextarea.git#master"
+    "jquery-highlighttextarea": "git://github.com/mistic100/jquery-highlighttextarea.git#master"
   }
 }

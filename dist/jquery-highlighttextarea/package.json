@@ -1,0 +1,36 @@
+{
+  "name": "jquery-highlighttextarea",
+  "version": "3.1.0",
+  "author": {
+    "name": "Damien \"Mistic\" Sorel",
+    "homepage": "http://www.strangeplanet.fr"
+  },
+  "description": "Allows to highlight words and sentences into textareas",
+  "main": [
+    "jquery.highlighttextarea.css",
+    "jquery.highlighttextarea.js"
+  ],
+  "devDependencies": {
+    "grunt": "~0.4.5",
+    "grunt-contrib-uglify": "~0.4.0",
+    "grunt-contrib-cssmin": "~0.9.0",
+    "grunt-contrib-jshint": "~0.10.0"
+  },
+  "keywords": [
+    "textarea",
+    "input",
+    "highlight"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/mistic100/jquery-highlighttextarea",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mistic100/jquery-highlighttextarea.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mistic100/jquery-highlighttextarea/issues"
+  },
+  "scripts": {
+    "test": "grunt test --force"
+  }
+}

@@ -1,10 +1,11 @@
 {
     "name": "jquery-highlighttextarea",
-    "version": "3.0.1",
+    "version": "3.1.0",
     "authors": [{
         "name": "Damien \"Mistic\" Sorel",
         "homepage": "http://www.strangeplanet.fr"
     }],
+    "description": "Allows to highlight words and sentences into textareas",
     "license": "MIT",
     "homepage": "http://www.strangeplanet.fr/work/jquery-highlighttextarea",
     "main": [

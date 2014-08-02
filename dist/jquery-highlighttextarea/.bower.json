@@ -6,6 +6,7 @@
       "homepage": "http://www.strangeplanet.fr"
     }
   ],
+  "description": "Allows to highlight words and sentences into textareas",
   "license": "MIT",
   "homepage": "http://www.strangeplanet.fr/work/jquery-highlighttextarea",
   "main": [
@@ -13,7 +14,7 @@
     "jquery.highlighttextarea.js"
   ],
   "dependencies": {
-    "jQuery": ">1.9"
+    "jquery": ">1.9"
   },
   "keywords": [
     "textarea",
@@ -31,13 +32,13 @@
     "test",
     "tests"
   ],
-  "_release": "a1c6236611",
+  "_release": "16283d28c1",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "a1c623661173bf3e176d920d7daad837b791a3f2"
+    "commit": "16283d28c1342e5060125a628fdac211cef7fdc6"
   },
-  "_source": "git@github.com:mistic100/jquery-highlighttextarea.git",
+  "_source": "git://github.com/mistic100/jquery-highlighttextarea.git",
   "_target": "master",
-  "_originalSource": "git@github.com:mistic100/jquery-highlighttextarea.git"
+  "_originalSource": "git://github.com/mistic100/jquery-highlighttextarea.git"
 }
