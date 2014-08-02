@@ -1,5 +1,5 @@
 /*!
- * jQuery highlightTextarea 3.0.1
+ * jQuery highlightTextarea 3.1.0
  * Copyright 2014 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
