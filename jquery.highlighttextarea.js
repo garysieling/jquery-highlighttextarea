@@ -19,10 +19,10 @@
         // build HTML
         this.$el = $el;
 
-        this.$el.wrap('<div class=highlightTextarea></div>');
+        this.$el.wrap('<div class="highlightTextarea"></div>');
         this.$main = this.$el.parent();
 
-        this.$main.prepend('<div class=container><div class=highlighter></div></div>');
+        this.$main.prepend('<div class="highlightTextarea-container"><div class="highlightTextarea-highlighter"></div></div>');
         this.$container = this.$main.children().first();
         this.$highlighter = this.$container.children();
 
@@ -184,15 +184,15 @@
 
         // add triggers to textarea
         this.$el.on({
-            'input.highlighter': Utilities.throttle(function() {
+            'input.highlightTextarea': Utilities.throttle(function() {
                 this.highlight();
             }, 100, this),
 
-            'resize.highlighter': Utilities.throttle(function() {
+            'resize.highlightTextarea': Utilities.throttle(function() {
                 this.updateSizePosition(true);
             }, 50, this),
 
-            'scroll.highlighter select.highlighter': Utilities.throttle(function() {
+            'scroll.highlightTextarea select.highlightTextarea': Utilities.throttle(function() {
                 this.updateSizePosition();
             }, 50, this)
         });
@@ -200,12 +200,12 @@
         if (this.isInput) {
             this.$el.on({
                 // Prevent Cmd-Left Arrow and Cmd-Right Arrow on Mac strange behavior
-                'keydown.highlighter keypress.highlighter keyup.highlighter': function() {
+                'keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea': function() {
                     setTimeout($.proxy(that.updateSizePosition, that), 1);
                 },
 
                 // Force Chrome behavior on all browsers: reset input position on blur
-                'blur.highlighter': function() {
+                'blur.highlightTextarea': function() {
                     this.value = this.value;
                     this.scrollLeft = 0;
                     that.updateSizePosition.call(that);
@@ -223,10 +223,8 @@
         }
         this.active = false;
 
-        this.$highlighter.off('click.highlighter');
-        this.$el.off('input.highlighter resize.highlighter scroll.highlighter' +
-            ' keydown.highlighter keypress.highlighter keyup.highlighter' +
-            ' select.highlighter blur.highlighter');
+        this.$highlighter.off('.highlightTextarea');
+        this.$el.off('.highlightTextarea');
     };
 
     /*
@@ -583,4 +581,4 @@
             }
         });
     };
-}(jQuery));
+}(window.jQuery || window.Zepto));
