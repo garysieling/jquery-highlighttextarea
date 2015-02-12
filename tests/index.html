@@ -67,6 +67,10 @@
           }],
           debug: true
       });
+      $('#demo10').highlightTextarea({
+        words: ['(term)', '+ sign'],
+        debug: true
+      });
 
       $('#demo7-tools .disable').click(function(e) {
           $('#demo7').highlightTextarea('disable');
@@ -179,6 +183,10 @@
     </div>
 
     <textarea id="demo7" cols="50" rows="5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </article>
+  <article>
+    <h3>Text with parenthesis or plus signs</h3>
+    <textarea id="demo10" cols="50" rows="5">Testing (term) other term with + sign</textarea>
   </article>
 </section>
 
