@@ -63,9 +63,13 @@
         var text = Utilities.htmlEntities(this.$el.val()),
             that = this;
 
+        var sanitizeRegexp = function(input) {
+            return input.replace(/\(/g, '\\(').replace(/\)/g, '\\)').replace(/\./g, '\\.').replace(/\+/g, '\\+');
+        };
+
         $.each(this.settings.words, function(color, words) {
             text = text.replace(
-                new RegExp('('+ words.join('|') +')', that.regParam),
+                new RegExp('('+ sanitizeRegexp(words).join('|') +')', that.regParam),
                 '<mark style="background-color:'+ color +';">$1</mark>'
             );
         });
