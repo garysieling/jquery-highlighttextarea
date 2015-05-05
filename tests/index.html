@@ -58,13 +58,14 @@
       });
       $('#demo9').highlightTextarea({
           ranges: [{
-              color: '#ADF0FF',
+              class: 'blue',
               start: 0,
               length: 5
           }, {
               color: '#FFFF00',
               ranges: [[6, 11], [40, 55]]
           }],
+          id: 'demo9-wrap',
           debug: true
       });
 
@@ -102,6 +103,10 @@
       margin:0 -3px;
       border-radius:0.5em;
       background-color:#9999FF !important;
+  }
+
+  #demo9-wrap mark.blue {
+      background-color: #ADF0FF;
   }
   </style>
 </head>
