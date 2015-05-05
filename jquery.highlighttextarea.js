@@ -1,6 +1,10 @@
 /*!
  * jQuery highlightTextarea
- * Copyright 2014 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+ * Original work Copyright 2014 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+ *
+ * Modified work Copyright 2015 Digital Cuisine (http://www.digitalcuisine.fr):
+ *  - adding a class attribute to <mark> tags to facilitate styling (only for ranges)
+ *
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
@@ -73,7 +77,15 @@
         $.each(this.settings.ranges, function(i, range) {
             if (range.start < text.length) {
                 text = Utilities.strInsert(text, range.end, '</mark>');
-                text = Utilities.strInsert(text, range.start, '<mark style="background-color:'+ range.color +';">');
+
+                var mark = '<mark style="background-color:'+ range.color +';"';
+                if (range.class != null)
+                {
+                    mark += 'class="' + range.class + '"';
+                }
+                mark += ">";
+
+                text = Utilities.strInsert(text, range.start, mark);
             }
         });
 
@@ -514,6 +526,7 @@
                         if ($.isArray(range.ranges[j])) {
                             out.push({
                                 color: range.color,
+                                class: range.class,
                                 start: range.ranges[j][0],
                                 end: range.ranges[j][1]
                             });
