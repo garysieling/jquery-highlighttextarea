@@ -53,6 +53,7 @@
         ranges: {},
         color: '#ffff00',
         caseSensitive: true,
+        wordsOnly: false,
         resizable: false,
         id: '',
         debug: false
@@ -66,10 +67,14 @@
     Highlighter.prototype.highlight = function() {
         var text = Utilities.htmlEntities(this.$el.val()),
             that = this;
-
+        	that.spacer = '';
+        	if (this.settings.wordsOnly ) {
+        		that.spacer = '\\b';
+        	}
+        	
         $.each(this.settings.words, function(color, words) {
             text = text.replace(
-                new RegExp('('+ words.join('|') +')', that.regParam),
+                new RegExp(that.spacer+'('+ words.join('|') +')'+that.spacer, that.regParam),
                 '<mark style="background-color:'+ color +';">$1</mark>'
             );
         });
