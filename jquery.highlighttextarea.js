@@ -65,7 +65,7 @@
      * Refresh highlight
      */
     Highlighter.prototype.highlight = function() {
-        var text = Utilities.htmlEntities(this.$el.val()),
+        var text = this.$el.val(),
             that = this;
         	that.spacer = '';
         	if (this.settings.wordsOnly ) {
