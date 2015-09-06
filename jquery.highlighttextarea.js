@@ -1,10 +1,6 @@
 /*!
  * jQuery highlightTextarea
- * Original work Copyright 2014 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
- *
- * Modified work Copyright 2015 Digital Cuisine (http://www.digitalcuisine.fr):
- *  - adding a class attribute to <mark> tags to facilitate styling (only for ranges)
- *
+ * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
