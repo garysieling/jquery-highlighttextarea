@@ -189,14 +189,14 @@
         var that = this;
 
         // prevent positioning errors by always focusing the textarea
-        this.$highlighter.on({
+        this.$highlighter.bind({
             'this.highlighter': function() {
                 that.$el.focus();
             }
         });
 
         // add triggers to textarea
-        this.$el.on({
+        this.$el.bind({
             'input.highlightTextarea': Utilities.throttle(function() {
                 this.highlight();
             }, 100, this),
@@ -211,7 +211,7 @@
         });
 
         if (this.isInput) {
-            this.$el.on({
+            this.$el.bind({
                 // Prevent Cmd-Left Arrow and Cmd-Right Arrow on Mac strange behavior
                 'keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea': function() {
                     setTimeout($.proxy(that.updateSizePosition, that), 1);
