@@ -15,6 +15,7 @@
         this.scrollbarWidth = Utilities.getScrollbarWidth();
         this.isInput = $el[0].tagName.toLowerCase()=='input';
         this.active = false;
+        this.matches = [];
 
         // build HTML
         this.$el = $el;
@@ -68,11 +69,16 @@
         		that.spacer = '\\b';
         	}
         	
+        var matches = [];
         $.each(this.settings.words, function(color, words) {
-            text = text.replace(
-                new RegExp(that.spacer+'('+ words.join('|') +')'+that.spacer, that.regParam),
-                '<mark style="background-color:'+ color +';">$1</mark>'
-            );
+          var regex = new RegExp(that.spacer+'('+ words.join('|') +')'+that.spacer, that.regParam);
+          var wordMatches = text.match(regex);
+          if (wordMatches) {
+            $.each(wordMatches, function(index, match) {
+              text = text.replace(match, '<mark style="background-color:'+ color +';">$&</mark>', 'g');
+              matches.push(match);
+            });
+          }
         });
 
         $.each(this.settings.ranges, function(i, range) {
@@ -89,6 +95,13 @@
                 text = Utilities.strInsert(text, range.start, mark);
             }
         });
+
+        if (matches.length !== this.matches.length) {
+          this.matches = matches;
+          var matchesChangedEvent = $.Event('matchesChanged');
+          matchesChangedEvent.matches = this.matches;
+          this.$el.trigger(matchesChangedEvent);
+        }
 
         this.$highlighter.html(text);
         this.updateSizePosition();
