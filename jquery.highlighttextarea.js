@@ -68,15 +68,19 @@
         	if (this.settings.wordsOnly ) {
         		that.spacer = '\\b';
         	}
-        	
+
         var matches = [];
         $.each(this.settings.words, function(color, words) {
           var regex = new RegExp(that.spacer+'('+ words.join('|') +')'+that.spacer, that.regParam);
           var wordMatches = text.match(regex);
           if (wordMatches) {
+            var evaluated = [];
             $.each(wordMatches, function(index, match) {
-              text = text.replace(match, '<mark style="background-color:'+ color +';">$&</mark>', 'g');
               matches.push(match);
+              if (evaluated.indexOf(match) === -1) {
+                text = text.replace(new RegExp(match, 'g'), '<mark style="background-color:'+ color +';">$&</mark>', 'g');
+                evaluated.push(match);
+              }
             });
           }
         });
