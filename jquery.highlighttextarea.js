@@ -52,6 +52,7 @@
         caseSensitive: true,
         wordsOnly: false,
         resizable: false,
+        resizableOptions: {},
         id: '',
         debug: false
     };
@@ -300,12 +301,14 @@
      */
     Highlighter.prototype.applyResizable = function() {
         if (jQuery.ui) {
-            this.$el.resizable({
-                'handles': 'se',
-                'resize': Utilities.throttle(function() {
-                    this.updateSizePosition(true);
-                }, 50, this)
-            });
+          var resizableOptionsDefaults = {
+            'handles': 'se',
+            'resize': Utilities.throttle(function() {
+              this.updateSizePosition(true);
+            }, 50, this)
+          };
+          var resizableOptions = $.extend({}, resizableOptionsDefaults, this.settings.resizableOptions);
+          this.$el.resizable(resizableOptions);
         }
     };
 
