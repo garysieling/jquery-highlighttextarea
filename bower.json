@@ -7,7 +7,7 @@
     }],
     "description": "Allows to highlight words and sentences into textareas",
     "license": "MIT",
-    "homepage": "http://www.strangeplanet.fr/work/jquery-highlighttextarea",
+    "homepage": "http://garysieling.github.io/jquery-highlighttextarea/",
     "main": [
         "jquery.highlighttextarea.css",
         "jquery.highlighttextarea.js"
@@ -22,7 +22,7 @@
     ],
     "repository": {
         "type": "git",
-        "url": "git://github.com/mistic100/jquery-highlighttextarea.git"
+        "url": "git://github.com/garysieling/jquery-highlighttextarea.git"
     },
     "ignore": [
         "**/.*",
