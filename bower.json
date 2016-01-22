@@ -4,8 +4,11 @@
     "authors": [{
         "name": "Damien \"Mistic\" Sorel",
         "homepage": "http://www.strangeplanet.fr"
+    }, {
+        "name": "Gary Sieling",
+	"homepage": "https://www.garysieling.com/blog"
     }],
-    "description": "Allows to highlight words and sentences into textareas",
+    "description": "Allows highlighting words and sentences in textareas",
     "license": "MIT",
     "homepage": "http://garysieling.github.io/jquery-highlighttextarea/",
     "main": [
