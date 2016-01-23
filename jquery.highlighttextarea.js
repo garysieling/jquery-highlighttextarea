@@ -7,6 +7,10 @@
 (function($){
     "use strict";
 
+    var isNumeric = function( n ) {
+      return !isNaN(parseFloat(n)) && isFinite(n);
+    }
+
     // Highlighter CLASS DEFINITON
     // ===============================
     var Highlighter = function($el, options) {
@@ -514,6 +518,7 @@
         return out;
     };
 
+    
     /*
      * Formats a list of ranges into a hash of arrays (Color => Ranges list)
      * @param ranges {mixed}
@@ -523,7 +528,7 @@
     Utilities.cleanRanges = function(ranges, color) {
         var out = [];
 
-        if ($.isPlainObject(ranges) || $.isNumeric(ranges[0])) {
+        if ($.isPlainObject(ranges) || isNumeric(ranges[0])) {
             ranges = [ranges];
         }
 
@@ -539,7 +544,7 @@
             }
             else {
                 if (range.ranges) {
-                    if ($.isPlainObject(range.ranges) || $.isNumeric(range.ranges[0])) {
+                    if ($.isPlainObject(range.ranges) || isNumeric(range.ranges[0])) {
                         range.ranges = [range.ranges];
                     }
 
