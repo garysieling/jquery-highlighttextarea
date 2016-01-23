@@ -2,10 +2,10 @@
   "name": "jquery-highlighttextarea",
   "version": "3.1.1",
   "author": {
-    "name": "Damien \"Mistic\" Sorel",
-    "homepage": "http://www.strangeplanet.fr"
+    "name": "Gary Sieling",
+    "homepage": "https://www.garysieling.com/blog"
   },
-  "description": "Allows to highlight words and sentences into textareas",
+  "description": "Allows highlighting words and sentences in textareas",
   "main": [
     "jquery.highlighttextarea.css",
     "jquery.highlighttextarea.js"
@@ -22,13 +22,13 @@
     "highlight"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/mistic100/jquery-highlighttextarea",
+  "homepage": "https://github.com/garysieling/jquery-highlighttextarea",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mistic100/jquery-highlighttextarea.git"
+    "url": "git://github.com/garysieling/jquery-highlighttextarea.git"
   },
   "bugs": {
-    "url": "https://github.com/mistic100/jquery-highlighttextarea/issues"
+    "url": "https://github.com/garysieling/jquery-highlighttextarea/issues"
   },
   "scripts": {
     "test": "grunt test --force"

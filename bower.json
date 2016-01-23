@@ -6,7 +6,7 @@
         "homepage": "http://www.strangeplanet.fr"
     }, {
         "name": "Gary Sieling",
-	"homepage": "https://www.garysieling.com/blog"
+        "homepage": "https://www.garysieling.com/blog"
     }],
     "description": "Allows highlighting words and sentences in textareas",
     "license": "MIT",
