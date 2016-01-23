@@ -15,6 +15,7 @@
         this.scrollbarWidth = Utilities.getScrollbarWidth();
         this.isInput = $el[0].tagName.toLowerCase()=='input';
         this.active = false;
+        this.matches = [];
 
         // build HTML
         this.$el = $el;
@@ -51,6 +52,7 @@
         caseSensitive: true,
         wordsOnly: false,
         resizable: false,
+        resizableOptions: {},
         id: '',
         debug: false
     };
@@ -67,12 +69,21 @@
         	if (this.settings.wordsOnly ) {
         		that.spacer = '\\b';
         	}
-        	
+
+        var matches = [];
         $.each(this.settings.words, function(color, words) {
-            text = text.replace(
-                new RegExp(that.spacer+'('+ words.join('|') +')'+that.spacer, that.regParam),
-                '<mark style="background-color:'+ color +';">$1</mark>'
-            );
+          var regex = new RegExp(that.spacer+'('+ words.join('|') +')'+that.spacer, that.regParam);
+          var wordMatches = text.match(regex);
+          if (wordMatches) {
+            var evaluated = [];
+            $.each(wordMatches, function(index, match) {
+              matches.push(match);
+              if (evaluated.indexOf(match) === -1) {
+                text = text.replace(new RegExp(match, 'g'), '<mark style="background-color:'+ color +';">$&</mark>', 'g');
+                evaluated.push(match);
+              }
+            });
+          }
         });
 
         $.each(this.settings.ranges, function(i, range) {
@@ -89,6 +100,13 @@
                 text = Utilities.strInsert(text, range.start, mark);
             }
         });
+
+        if (matches.length !== this.matches.length) {
+          this.matches = matches;
+          var matchesChangedEvent = $.Event('matchesChanged');
+          matchesChangedEvent.matches = this.matches;
+          this.$el.trigger(matchesChangedEvent);
+        }
 
         this.$highlighter.html(text);
         this.updateSizePosition();
@@ -189,14 +207,14 @@
         var that = this;
 
         // prevent positioning errors by always focusing the textarea
-        this.$highlighter.on({
+        this.$highlighter.bind({
             'this.highlighter': function() {
                 that.$el.focus();
             }
         });
 
         // add triggers to textarea
-        this.$el.on({
+        this.$el.bind({
             'input.highlightTextarea': Utilities.throttle(function() {
                 this.highlight();
             }, 100, this),
@@ -211,7 +229,7 @@
         });
 
         if (this.isInput) {
-            this.$el.on({
+            this.$el.bind({
                 // Prevent Cmd-Left Arrow and Cmd-Right Arrow on Mac strange behavior
                 'keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea': function() {
                     setTimeout($.proxy(that.updateSizePosition, that), 1);
@@ -283,12 +301,14 @@
      */
     Highlighter.prototype.applyResizable = function() {
         if (jQuery.ui) {
-            this.$el.resizable({
-                'handles': 'se',
-                'resize': Utilities.throttle(function() {
-                    this.updateSizePosition(true);
-                }, 50, this)
-            });
+          var resizableOptionsDefaults = {
+            'handles': 'se',
+            'resize': Utilities.throttle(function() {
+              this.updateSizePosition(true);
+            }, 50, this)
+          };
+          var resizableOptions = $.extend({}, resizableOptionsDefaults, this.settings.resizableOptions);
+          this.$el.resizable(resizableOptions);
         }
     };
 
