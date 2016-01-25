@@ -5,7 +5,7 @@ module.exports = function(grunt) {
         banner:
             '/*!\n'+
             ' * jQuery highlightTextarea <%= pkg.version %>\n'+
-            ' * Copyright <%= grunt.template.today("yyyy") %> Damien "Mistic" Sorel (http://www.strangeplanet.fr)\n'+
+            ' * Copyright 2014-<%= grunt.template.today("yyyy") %> Damien "Mistic" Sorel (http://www.strangeplanet.fr)\n'+
             ' * Licensed under MIT (http://opensource.org/licenses/MIT)\n'+
             ' */',
 

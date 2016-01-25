@@ -1,11 +1,15 @@
 /*!
  * jQuery highlightTextarea
- * Copyright 2014 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
+ * Copyright 2014-2015 Damien "Mistic" Sorel (http://www.strangeplanet.fr)
  * Licensed under MIT (http://opensource.org/licenses/MIT)
  */
 
 (function($){
     "use strict";
+
+    var isNumeric = function( n ) {
+      return !isNaN(parseFloat(n)) && isFinite(n);
+    }
 
     // Highlighter CLASS DEFINITON
     // ===============================
@@ -15,14 +19,15 @@
         this.scrollbarWidth = Utilities.getScrollbarWidth();
         this.isInput = $el[0].tagName.toLowerCase()=='input';
         this.active = false;
+        this.matches = [];
 
         // build HTML
         this.$el = $el;
 
-        this.$el.wrap('<div class=highlightTextarea></div>');
+        this.$el.wrap('<div class="highlightTextarea"></div>');
         this.$main = this.$el.parent();
 
-        this.$main.prepend('<div class=container><div class=highlighter></div></div>');
+        this.$main.prepend('<div class="highlightTextarea-container"><div class="highlightTextarea-highlighter"></div></div>');
         this.$container = this.$main.children().first();
         this.$highlighter = this.$container.children();
 
@@ -49,7 +54,9 @@
         ranges: {},
         color: '#ffff00',
         caseSensitive: true,
+        wordsOnly: false,
         resizable: false,
+        resizableOptions: {},
         id: '',
         debug: false
     };
@@ -60,22 +67,50 @@
      * Refresh highlight
      */
     Highlighter.prototype.highlight = function() {
-        var text = Utilities.htmlEntities(this.$el.val()),
+        var text = this.$el.val(),
             that = this;
+        	that.spacer = '';
+        	if (this.settings.wordsOnly ) {
+        		that.spacer = '\\b';
+        	}
 
+        var matches = [];
         $.each(this.settings.words, function(color, words) {
-            text = text.replace(
-                new RegExp('('+ words.join('|') +')', that.regParam),
-                '<mark style="background-color:'+ color +';">$1</mark>'
-            );
+          var regex = new RegExp(that.spacer+'('+ words.join('|') +')'+that.spacer, that.regParam);
+          var wordMatches = text.match(regex);
+          if (wordMatches) {
+            var evaluated = [];
+            $.each(wordMatches, function(index, match) {
+              matches.push(match);
+              if (evaluated.indexOf(match) === -1) {
+                text = text.replace(new RegExp(match, 'g'), '<mark style="background-color:'+ color +';">$&</mark>', 'g');
+                evaluated.push(match);
+              }
+            });
+          }
         });
 
         $.each(this.settings.ranges, function(i, range) {
             if (range.start < text.length) {
                 text = Utilities.strInsert(text, range.end, '</mark>');
-                text = Utilities.strInsert(text, range.start, '<mark style="background-color:'+ range.color +';">');
+
+                var mark = '<mark style="background-color:'+ range.color +';"';
+                if (range.class != null)
+                {
+                    mark += 'class="' + range.class + '"';
+                }
+                mark += ">";
+
+                text = Utilities.strInsert(text, range.start, mark);
             }
         });
+
+        if (matches.length !== this.matches.length) {
+          this.matches = matches;
+          var matchesChangedEvent = $.Event('matchesChanged');
+          matchesChangedEvent.matches = this.matches;
+          this.$el.trigger(matchesChangedEvent);
+        }
 
         this.$highlighter.html(text);
         this.updateSizePosition();
@@ -176,36 +211,36 @@
         var that = this;
 
         // prevent positioning errors by always focusing the textarea
-        this.$highlighter.on({
+        this.$highlighter.bind({
             'this.highlighter': function() {
                 that.$el.focus();
             }
         });
 
         // add triggers to textarea
-        this.$el.on({
-            'input.highlighter': Utilities.throttle(function() {
+        this.$el.bind({
+            'input.highlightTextarea': Utilities.throttle(function() {
                 this.highlight();
             }, 100, this),
 
-            'resize.highlighter': Utilities.throttle(function() {
+            'resize.highlightTextarea': Utilities.throttle(function() {
                 this.updateSizePosition(true);
             }, 50, this),
 
-            'scroll.highlighter select.highlighter': Utilities.throttle(function() {
+            'scroll.highlightTextarea select.highlightTextarea': Utilities.throttle(function() {
                 this.updateSizePosition();
             }, 50, this)
         });
 
         if (this.isInput) {
-            this.$el.on({
+            this.$el.bind({
                 // Prevent Cmd-Left Arrow and Cmd-Right Arrow on Mac strange behavior
-                'keydown.highlighter keypress.highlighter keyup.highlighter': function() {
+                'keydown.highlightTextarea keypress.highlightTextarea keyup.highlightTextarea': function() {
                     setTimeout($.proxy(that.updateSizePosition, that), 1);
                 },
 
                 // Force Chrome behavior on all browsers: reset input position on blur
-                'blur.highlighter': function() {
+                'blur.highlightTextarea': function() {
                     this.value = this.value;
                     this.scrollLeft = 0;
                     that.updateSizePosition.call(that);
@@ -223,10 +258,8 @@
         }
         this.active = false;
 
-        this.$highlighter.off('click.highlighter');
-        this.$el.off('input.highlighter resize.highlighter scroll.highlighter' +
-            ' keydown.highlighter keypress.highlighter keyup.highlighter' +
-            ' select.highlighter blur.highlighter');
+        this.$highlighter.off('.highlightTextarea');
+        this.$el.off('.highlightTextarea');
     };
 
     /*
@@ -258,7 +291,7 @@
         // the highlighter has the same size than the "inner" textarea and must have the same font properties
         Utilities.cloneCss(this.$el, this.$highlighter, [
             'font-size','font-family','font-style','font-weight','font-variant','font-stretch',
-            'line-height','vertical-align','word-spacing','text-align','letter-spacing', 'text-rendering'
+            'vertical-align','word-spacing','text-align','letter-spacing', 'text-rendering'
         ]);
 
         // now make the textarea transparent to see the highlighter through
@@ -272,12 +305,14 @@
      */
     Highlighter.prototype.applyResizable = function() {
         if (jQuery.ui) {
-            this.$el.resizable({
-                'handles': 'se',
-                'resize': Utilities.throttle(function() {
-                    this.updateSizePosition(true);
-                }, 50, this)
-            });
+          var resizableOptionsDefaults = {
+            'handles': 'se',
+            'resize': Utilities.throttle(function() {
+              this.updateSizePosition(true);
+            }, 50, this)
+          };
+          var resizableOptions = $.extend({}, resizableOptionsDefaults, this.settings.resizableOptions);
+          this.$el.resizable(resizableOptions);
         }
     };
 
@@ -483,6 +518,7 @@
         return out;
     };
 
+    
     /*
      * Formats a list of ranges into a hash of arrays (Color => Ranges list)
      * @param ranges {mixed}
@@ -492,7 +528,7 @@
     Utilities.cleanRanges = function(ranges, color) {
         var out = [];
 
-        if ($.isPlainObject(ranges) || $.isNumeric(ranges[0])) {
+        if ($.isPlainObject(ranges) || isNumeric(ranges[0])) {
             ranges = [ranges];
         }
 
@@ -508,7 +544,7 @@
             }
             else {
                 if (range.ranges) {
-                    if ($.isPlainObject(range.ranges) || $.isNumeric(range.ranges[0])) {
+                    if ($.isPlainObject(range.ranges) || isNumeric(range.ranges[0])) {
                         range.ranges = [range.ranges];
                     }
 
@@ -516,6 +552,7 @@
                         if ($.isArray(range.ranges[j])) {
                             out.push({
                                 color: range.color,
+                                class: range.class,
                                 start: range.ranges[j][0],
                                 end: range.ranges[j][1]
                             });
@@ -583,4 +620,4 @@
             }
         });
     };
-}(jQuery));
+}(window.jQuery || window.Zepto));
