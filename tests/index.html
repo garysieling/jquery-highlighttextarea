@@ -94,11 +94,11 @@
       $('#demo10').highlightTextarea({
           ranges: [{
               class: 'blue',
-              start: 1,
-              length: 4
+              start: 0,
+              length: 2
           }, {
               color: '#FFFF00',
-              ranges: [[12, 16]]
+              ranges: [[12, 15]]
           }],
           id: 'demo10-wrap',
           debug: true
@@ -106,11 +106,17 @@
 
       $('#demo11').highlightTextarea({
           ranges: [{
-              class: 'blue',
-              start: 0,
-              length: 5
+              color: '#FFFF00',
+              ranges: [[0, 1], [10, 11], [21, 22], [24, 25]]
           }],
-          id: 'demo11-wrap',
+          debug: true
+      });
+
+      $('#demo12').highlightTextarea({
+          ranges: [{
+              color: '#FFFF00',
+              ranges: [[0, 5]]
+          }],
           debug: true
       });
 
@@ -354,7 +360,7 @@ fær—à
   <article>
     <h3>Right to Left</h3>
 
-    <textarea id="demo11" cols="50" rows="5">
+    <textarea id="demo12" cols="50" rows="5">
 وقد انتباه المجتمع مع. أم لكل وبغطاء العناد. كل وحرمان العسكري للإتحاد الى. والكوري بريطانيا كما و, أم أحكم السفن مواقعها غير.
     </textarea>
   </article>
