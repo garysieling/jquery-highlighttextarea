@@ -96,6 +96,48 @@ $('textarea').highlightTextarea({
   }
 </style>
 {% endhighlight %}
+
+<h3 id="custom">HTML Entities</h3>
+  <div class="bs-example">
+    <textarea id="demo10" cols="50" rows="5">&gt;&gt; test diff
+&lt;&lt; test diff
+    </textarea>
+  </div>
+{% highlight html %}
+<script>
+  $('#demo10').highlightTextarea({
+      ranges: [{
+          class: 'blue',
+          start: 0,
+          length: 2
+      }, {
+          color: '#FFFF00',
+          ranges: [[12, 15]]
+      }],
+      id: 'demo10-wrap',
+      debug: true
+  });
+</script>
+{% endhighlight %}
+
+<h3 id="custom">Accents</h3>
+  <div class="bs-example">
+    <textarea id="demo11" cols="50" rows="5">€100
+test über word
+fær—à
+    </textarea>
+  </div>
+{% highlight html %}
+<script>
+  $('#demo11').highlightTextarea({
+      ranges: [{
+          color: '#FFFF00',
+          ranges: [[0, 1], [10, 11], [21, 22], [24, 25]]
+      }],
+      debug: true
+  });
+</script>
+{% endhighlight %}
 </section>
 
 
