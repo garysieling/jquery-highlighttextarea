@@ -94,11 +94,11 @@
       $('#demo10').highlightTextarea({
           ranges: [{
               class: 'blue',
-              start: 0,
-              length: 5
+              start: 1,
+              length: 4
           }, {
               color: '#FFFF00',
-              ranges: [[6, 11], [40, 55]]
+              ranges: [[12, 16]]
           }],
           id: 'demo10-wrap',
           debug: true
@@ -109,9 +109,6 @@
               class: 'blue',
               start: 0,
               length: 5
-          }, {
-              color: '#FFFF00',
-              ranges: [[6, 11], [40, 55]]
           }],
           id: 'demo11-wrap',
           debug: true
@@ -179,7 +176,7 @@
       background-color:#9999FF !important;
   }
 
-  #demo9-wrap mark.blue {
+  #demo9-wrap mark.blue, #demo10-wrap mark.blue, #demo11-wrap mark.blue {
       background-color: #ADF0FF;
   }
   </style>
@@ -341,17 +338,16 @@
     <h3>HTML Entities</h3>
 
     <textarea id="demo10" cols="50" rows="5">&gt;&gt; test diff
-      &lt;&lt; test diff
+&lt;&lt; test diff
     </textarea>
   </article>
 
   <article>
     <h3>Accents</h3>
 
-    <textarea id="demo11" cols="50" rows="5">
-      €100
-      test über word
-      fær—à
+    <textarea id="demo11" cols="50" rows="5">€100
+test über word
+fær—à
     </textarea>
   </article>
 
@@ -359,7 +355,7 @@
     <h3>Right to Left</h3>
 
     <textarea id="demo11" cols="50" rows="5">
-      وقد انتباه المجتمع مع. أم لكل وبغطاء العناد. كل وحرمان العسكري للإتحاد الى. والكوري بريطانيا كما و, أم أحكم السفن مواقعها غير.
+وقد انتباه المجتمع مع. أم لكل وبغطاء العناد. كل وحرمان العسكري للإتحاد الى. والكوري بريطانيا كما و, أم أحكم السفن مواقعها غير.
     </textarea>
   </article>
 
