@@ -6,10 +6,7 @@
     "homepage": "https://www.garysieling.com/blog"
   },
   "description": "Allows highlighting words and sentences in textareas",
-  "main": [
-    "jquery.highlighttextarea.css",
-    "jquery.highlighttextarea.js"
-  ],
+  "main": "jquery.highlighttextarea.js",
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-cssmin": "~0.9.0",
