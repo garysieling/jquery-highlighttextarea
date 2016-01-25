@@ -9,4 +9,5 @@ highlightTextarea is a jQuery plugin which allows you to highlight words and sen
 http://garysieling.github.io/jquery-highlighttextarea/
 
 ## Development status
+3.1.3: Support text ranges with HTML entities
 3.1.2: Added tests for jQuery versions & verify on jQuery 1.5+
