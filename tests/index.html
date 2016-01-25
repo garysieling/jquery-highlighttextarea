@@ -91,6 +91,32 @@
           debug: true
       });
 
+      $('#demo10').highlightTextarea({
+          ranges: [{
+              class: 'blue',
+              start: 0,
+              length: 5
+          }, {
+              color: '#FFFF00',
+              ranges: [[6, 11], [40, 55]]
+          }],
+          id: 'demo10-wrap',
+          debug: true
+      });
+
+      $('#demo11').highlightTextarea({
+          ranges: [{
+              class: 'blue',
+              start: 0,
+              length: 5
+          }, {
+              color: '#FFFF00',
+              ranges: [[6, 11], [40, 55]]
+          }],
+          id: 'demo11-wrap',
+          debug: true
+      });
+
       $('#demo7-tools .disable').click(function(e) {
           $('#demo7').highlightTextarea('disable');
           e.preventDefault();
@@ -218,7 +244,7 @@
       <option value="jquery-1.7.2.js">jQuery Core 1.7.2</option>
       <option value="jquery-1.7.2rc1.js">jQuery Core 1.7.2-rc1</option>
       <option value="jquery-1.7.2b1.js">jQuery Core 1.7.2-b1</option>
-   <option value="jquery-1.7.1.js">jQuery Core 1.7.1</option>
+      <option value="jquery-1.7.1.js">jQuery Core 1.7.1</option>
       <option value="jquery-1.7.1rc1.js">jQuery Core 1.7.1-rc1</option>
       <option value="jquery-1.7.0.js">jQuery Core 1.7.0</option>
       <option value="jquery-1.7.js">jQuery Core 1.7.0</option>
@@ -309,6 +335,32 @@
     <h3>Ranges</h3>
 
     <textarea id="demo9" cols="50" rows="5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </article>
+
+  <article>
+    <h3>HTML Entities</h3>
+
+    <textarea id="demo10" cols="50" rows="5">&gt;&gt; test diff
+      &lt;&lt; test diff
+    </textarea>
+  </article>
+
+  <article>
+    <h3>Accents</h3>
+
+    <textarea id="demo11" cols="50" rows="5">
+      €100
+      test über word
+      fær—à
+    </textarea>
+  </article>
+
+  <article>
+    <h3>Right to Left</h3>
+
+    <textarea id="demo11" cols="50" rows="5">
+      وقد انتباه المجتمع مع. أم لكل وبغطاء العناد. كل وحرمان العسكري للإتحاد الى. والكوري بريطانيا كما و, أم أحكم السفن مواقعها غير.
+    </textarea>
   </article>
 
   <article>
