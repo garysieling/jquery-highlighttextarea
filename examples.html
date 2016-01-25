@@ -112,7 +112,7 @@ $('textarea').highlightTextarea({
           length: 2
       }, {
           color: '#FFFF00',
-          ranges: [[12, 15]]
+          ranges: [[0, 2], [12, 15]]
       }],
       id: 'demo10-wrap',
       debug: true
@@ -186,6 +186,28 @@ $('#demo-custom').highlightTextarea({
   words: ['Lorem ipsum', 'vulputate'],
   id: 'demoCustom'
 });
+
+$('#demo10').highlightTextarea({
+  ranges: [{
+      class: 'blue',
+      start: 0,
+      length: 2
+  }, {
+      color: '#FFFF00',
+      ranges: [[0, 2], [12, 15]]
+  }],
+  id: 'demo10-wrap',
+  debug: true
+});
+
+$('#demo11').highlightTextarea({
+  ranges: [{
+    color: '#FFFF00',
+    ranges: [[0, 1], [10, 11], [21, 22], [24, 25]]
+  }],
+  debug: true
+});
+
 </script>
 
 <style>
