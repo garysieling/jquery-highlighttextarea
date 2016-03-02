@@ -74,16 +74,43 @@
         		that.spacer = '\\b';
         	}
 
+        function htmlDecode(input){
+          var e = document.createElement('div');
+          e.innerHTML = input;
+          return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+        }
+
         var matches = [];
         $.each(this.settings.words, function(color, words) {
-          var regex = new RegExp(that.spacer+'('+ words.join('|') +')'+that.spacer, that.regParam);
+          var wordsRe = htmlDecode(words.join("|"));
+          var re = that.spacer + '(' + wordsRe + ')' + that.spacer;
+          var regex = new RegExp(re, that.regParam);
+
           var wordMatches = text.match(regex);
           if (wordMatches) {
             var evaluated = [];
-            $.each(wordMatches, function(index, match) {
+            $.each(words, function(index, match) {
+              match = htmlDecode(match);
+
               matches.push(match);
               if (evaluated.indexOf(match) === -1) {
-                text = text.replace(new RegExp(match, 'g'), '<mark style="background-color:'+ color +';">$&</mark>', 'g');
+                text = text.replace(
+                  new RegExp(match, that.regParam), 
+                    function(innerMatch, start, contents) {
+                      var encodedMatch = innerMatch
+                        .replace(/[&"<>]/g, function (c) {
+                          return {
+                            '&': "&amp;",
+                            '"': "&quot;",
+                            '<': "&lt;",
+                            '>': "&gt;"
+                          }[c];
+                      });
+
+                      return '<mark style="background-color:'+ color +';">' + encodedMatch + '</mark>';
+                    }
+                  );
+
                 evaluated.push(match);
               }
             });

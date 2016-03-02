@@ -47,15 +47,23 @@
           caseSensitive: false,
           debug: true
       });
+
       $('#demo3').highlightTextarea({
           words: ['Lorem ipsum','Nam varius','Nullam'],
           resizable: true,
           debug: true
       });
+      $('#demo_pipes').highlightTextarea({
+          words: ['w[|]ord', 'w<ord'],
+          resizable: true,
+          debug: true
+      });
+
       $('#demo4').highlightTextarea({
           words: ['{(.+?)}'],
           debug: true
       });
+
       $('#demo5').highlightTextarea({
           words: ['Lorem ipsum','vulputate'],
           id: 'demo5-wrap',
@@ -375,6 +383,12 @@ fær—à
     <h3>Resizable (jQuery UI)</h3>
 
     <textarea id="demo3" cols="50" rows="5">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque at massa non erat convallis vulputate molestie nec dui. Donec auctor blandit nibh quis luctus. Donec tincidunt auctor consequat.</textarea>
+  </article>
+
+ <article>
+    <h3>Test Pipes</h3>
+
+    <textarea id="demo_pipes" cols="50" rows="5">Lorem ipsum w<ord dolor sit |word, abc w|ord . word| consequat.</textarea>
   </article>
 
   <article>
