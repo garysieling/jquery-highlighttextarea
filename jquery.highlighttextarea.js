@@ -7,6 +7,7 @@
 (function($){
     "use strict";
 
+    var mouseOverElement = null;
     var isNumeric = function( n ) {
       return !isNaN(parseFloat(n)) && isFinite(n);
     }
@@ -45,6 +46,7 @@
 
         // run
         this.updateCss();
+        this.bindDocumentEvents();
         this.bindEvents();
         this.highlight();
     };
@@ -224,6 +226,49 @@
         if (this.active) {
             this.highlight();
         }
+    };
+
+    /*
+     * Attach event listeners for document-level events.  These should only be bound once, not every time the plugin is used.
+     */
+    Highlighter.prototype.bindDocumentEvents = function() {
+        if(Highlighter.documentEventsBound) {
+            return;
+        }
+
+        //Trigger simulated mouseout and mouseover events on highlightTextarea mark elements.
+        $(document).bind('mousemove', function(e) {
+            var mouseX = e.pageX;
+            var mouseY = e.pageY;
+            var lastMouseOverElement = mouseOverElement;
+            mouseOverElement = null;
+
+            //Mouse can only be "over" one element at a time; loop through all highlightTextarea mark elements until we find one that is moused over.
+            $('.highlightTextarea mark').each(function(index) {
+                var $this = $(this);
+                var pos = $this.offset();
+                var top = pos.top;
+                var left = pos.left;
+                var height = $this.height();
+                var width = $this.width();
+
+                if (mouseX >= left && mouseY >= top && mouseX <= left + width && mouseY <= top + height) {
+                    mouseOverElement = this;
+                    return;
+                }
+            });
+
+            if(mouseOverElement != lastMouseOverElement) {
+                if(lastMouseOverElement != null) {
+                    $(lastMouseOverElement).trigger('mouseout');
+                }
+                if(mouseOverElement != null) {
+                  $(mouseOverElement).trigger('mouseover');
+                }
+            }
+        });
+
+        Highlighter.documentEventsBound = true;
     };
 
     /*
