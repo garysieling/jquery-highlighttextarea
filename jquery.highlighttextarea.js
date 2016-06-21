@@ -76,12 +76,15 @@
         		that.spacer = '\\b';
         	}
 
-        function htmlDecode(input){
-          var e = document.createElement('div');
-          e.innerHTML = input;
-          return e.childNodes.length === 0 ? "" : e.childNodes[0].nodeValue;
+        function htmlDecode(input) {
+          return $('<div/>').text(input).html();
         }
 
+        // Encode text before inserting into <div> so that the textarea and
+        // overlay don't get out if sync when the textarea contains something 
+        // HTML (e.g. "&amp;" or <foo>).
+        text = htmlDecode(text);
+        
         var matches = [];
         $.each(this.settings.words, function(color, words) {
           var wordsRe = htmlDecode(words.join("|"));
