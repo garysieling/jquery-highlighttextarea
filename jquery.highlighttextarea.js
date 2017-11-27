@@ -100,7 +100,7 @@
               matches.push(match);
               if (evaluated.indexOf(match) === -1) {
                 text = text.replace(
-                  new RegExp(match, that.regParam), 
+                  new RegExp(that.spacer + match + that.spacer, that.regParam), 
                     function(innerMatch, start, contents) {
                       var encodedMatch = innerMatch
                         .replace(/[&"<>]/g, function (c) {
