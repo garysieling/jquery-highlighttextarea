@@ -358,7 +358,7 @@
         this.$container.css({
             'top':        Utilities.toPx(this.$el.css('margin-top')) + Utilities.toPx(this.$el.css('border-top-width')),
             'left':     Utilities.toPx(this.$el.css('margin-left')) + Utilities.toPx(this.$el.css('border-left-width')),
-            'width':    this.$el.width(),
+            'width':    '100%',
             'height': this.$el.height()
         });
 
