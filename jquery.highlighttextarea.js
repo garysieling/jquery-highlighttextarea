@@ -87,40 +87,40 @@
 
         var matches = [];
 
-        var wordColorMap = {};
+        var wordColorMap = {}, 
+          allWords = [];
         $.each(this.settings.words, function (color, words) {
           $.each(words, function (index, word) {
             wordColorMap[word] = color;
+            allWords.push(word);
           });
         });
 
-        $.each(wordColorMap, function (word, color) {
+        var allWordsRe = allWords.map(function (word) {
           var wordsRe = htmlDecode(word);
-          var re = that.spacer + '(' + wordsRe + ')' + that.spacer;
-          var regex = new RegExp(re, that.regParam);
+          var re = '(' + that.spacer + wordsRe + that.spacer + ')';
+          return re;
+        }).join('|');
+        var regex = new RegExp(allWordsRe, that.regParam);
 
-          var wordMatches = text.match(regex);
-          if (wordMatches) {
-            word = htmlDecode(word);
-            matches.push(word);
-            text = text.replace(
-              new RegExp(that.spacer + word + that.spacer, that.regParam),
-                function(innerMatch, start, contents) {
-                  var encodedMatch = innerMatch
-                    .replace(/[&"<>]/g, function (c) {
-                      return {
-                        '&': "&amp;",
-                        '"': "&quot;",
-                        '<': "&lt;",
-                        '>': "&gt;"
-                      }[c];
-                  });
+        var wordMatches = text.match(regex);
+        if (wordMatches) {
+          text = text.replace(regex, function(innerMatch, start, contents) {
+            matches.push(innerMatch);
+            var encodedMatch = innerMatch
+              .replace(/[&"<>]/g, function (c) {
+                return {
+                  '&': "&amp;",
+                  '"': "&quot;",
+                  '<': "&lt;",
+                  '>': "&gt;"
+                }[c];
+              });
 
-                  return '<mark style="background-color:'+ color +';">' + encodedMatch + '</mark>';
-                }
-              );
-          }
-        });
+            var color = wordColorMap[innerMatch];
+            return '<mark style="background-color:'+ color +';">' + encodedMatch + '</mark>';
+          });
+        }
 
         $.each(this.settings.ranges, function(i, range) {
             if (range.start < text.length) {
