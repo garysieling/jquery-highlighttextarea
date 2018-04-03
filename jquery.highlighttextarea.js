@@ -81,44 +81,44 @@
         }
 
         // Encode text before inserting into <div> so that the textarea and
-        // overlay don't get out if sync when the textarea contains something 
+        // overlay don't get out if sync when the textarea contains something
         // HTML (e.g. "&amp;" or <foo>).
         text = htmlDecode(text);
-        
+
         var matches = [];
-        $.each(this.settings.words, function(color, words) {
-          var wordsRe = htmlDecode(words.join("|"));
+
+        var wordColorMap = {};
+        $.each(this.settings.words, function (color, words) {
+          $.each(words, function (index, word) {
+            wordColorMap[word] = color;
+          });
+        });
+
+        $.each(wordColorMap, function (word, color) {
+          var wordsRe = htmlDecode(word);
           var re = that.spacer + '(' + wordsRe + ')' + that.spacer;
           var regex = new RegExp(re, that.regParam);
 
           var wordMatches = text.match(regex);
           if (wordMatches) {
-            var evaluated = [];
-            $.each(words, function(index, match) {
-              match = htmlDecode(match);
+            word = htmlDecode(word);
+            matches.push(word);
+            text = text.replace(
+              new RegExp(that.spacer + word + that.spacer, that.regParam),
+                function(innerMatch, start, contents) {
+                  var encodedMatch = innerMatch
+                    .replace(/[&"<>]/g, function (c) {
+                      return {
+                        '&': "&amp;",
+                        '"': "&quot;",
+                        '<': "&lt;",
+                        '>': "&gt;"
+                      }[c];
+                  });
 
-              matches.push(match);
-              if (evaluated.indexOf(match) === -1) {
-                text = text.replace(
-                  new RegExp(that.spacer + match + that.spacer, that.regParam), 
-                    function(innerMatch, start, contents) {
-                      var encodedMatch = innerMatch
-                        .replace(/[&"<>]/g, function (c) {
-                          return {
-                            '&': "&amp;",
-                            '"': "&quot;",
-                            '<': "&lt;",
-                            '>': "&gt;"
-                          }[c];
-                      });
-
-                      return '<mark style="background-color:'+ color +';">' + encodedMatch + '</mark>';
-                    }
-                  );
-
-                evaluated.push(match);
-              }
-            });
+                  return '<mark style="background-color:'+ color +';">' + encodedMatch + '</mark>';
+                }
+              );
           }
         });
 
@@ -592,7 +592,7 @@
         return out;
     };
 
-    
+
     /*
      * Formats a list of ranges into a hash of arrays (Color => Ranges list)
      * @param ranges {mixed}
