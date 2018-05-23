@@ -46,6 +46,9 @@ module.exports = function(grunt) {
                         'jquery.highlighttextarea.js'
                     ]
                 }
+            },
+            options: {
+                reporterOutput: ''
             }
         }
     });

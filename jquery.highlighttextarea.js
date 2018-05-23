@@ -81,46 +81,46 @@
         }
 
         // Encode text before inserting into <div> so that the textarea and
-        // overlay don't get out if sync when the textarea contains something 
+        // overlay don't get out if sync when the textarea contains something
         // HTML (e.g. "&amp;" or <foo>).
         text = htmlDecode(text);
-        
+
         var matches = [];
-        $.each(this.settings.words, function(color, words) {
-          var wordsRe = htmlDecode(words.join("|"));
-          var re = that.spacer + '(' + wordsRe + ')' + that.spacer;
-          var regex = new RegExp(re, that.regParam);
 
-          var wordMatches = text.match(regex);
-          if (wordMatches) {
-            var evaluated = [];
-            $.each(words, function(index, match) {
-              match = htmlDecode(match);
-
-              matches.push(match);
-              if (evaluated.indexOf(match) === -1) {
-                text = text.replace(
-                  new RegExp(that.spacer + match + that.spacer, that.regParam), 
-                    function(innerMatch, start, contents) {
-                      var encodedMatch = innerMatch
-                        .replace(/[&"<>]/g, function (c) {
-                          return {
-                            '&': "&amp;",
-                            '"': "&quot;",
-                            '<': "&lt;",
-                            '>': "&gt;"
-                          }[c];
-                      });
-
-                      return '<mark style="background-color:'+ color +';">' + encodedMatch + '</mark>';
-                    }
-                  );
-
-                evaluated.push(match);
-              }
-            });
-          }
+        var wordColorMap = {}, 
+          allWords = [];
+        $.each(this.settings.words, function (color, words) {
+          $.each(words, function (index, word) {
+            wordColorMap[word] = color;
+            allWords.push(word);
+          });
         });
+
+        var allWordsRe = allWords.map(function (word) {
+          var wordsRe = htmlDecode(word);
+          var re = '(' + that.spacer + wordsRe + that.spacer + ')';
+          return re;
+        }).join('|');
+        var regex = new RegExp(allWordsRe, that.regParam);
+
+        var wordMatches = text.match(regex);
+        if (wordMatches) {
+          text = text.replace(regex, function(innerMatch, start, contents) {
+            matches.push(innerMatch);
+            var encodedMatch = innerMatch
+              .replace(/[&"<>]/g, function (c) {
+                return {
+                  '&': "&amp;",
+                  '"': "&quot;",
+                  '<': "&lt;",
+                  '>': "&gt;"
+                }[c];
+              });
+
+            var color = wordColorMap[innerMatch];
+            return '<mark style="background-color:'+ color +';">' + encodedMatch + '</mark>';
+          });
+        }
 
         $.each(this.settings.ranges, function(i, range) {
             if (range.start < text.length) {
@@ -592,7 +592,7 @@
         return out;
     };
 
-    
+
     /*
      * Formats a list of ranges into a hash of arrays (Color => Ranges list)
      * @param ranges {mixed}
